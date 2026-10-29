@@ -42,7 +42,11 @@ h2 { font-size: 14px; letter-spacing: .1em; text-transform: uppercase; color: va
 .tag { display: inline-block; font-size: 13px; font-weight: 700; color: var(--accent); background: var(--accent-soft); border-radius: 999px; padding: 3px 10px; margin-bottom: 10px; }
 .app p { margin: 0 0 12px; max-width: 58ch; }
 .app ul { margin: 0 0 14px; padding-left: 20px; color: var(--muted); }
-.links { display: flex; flex-wrap: wrap; gap: 16px; font-weight: 600; }
+.links { display: flex; flex-wrap: wrap; align-items: center; gap: 16px; font-weight: 600; }
+.cta { background: var(--accent); color: #fff; text-decoration: none; padding: 10px 18px; border-radius: 12px; }
+:root[data-theme="dark"] .cta { color: #1A0D04; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .cta { color: #1A0D04; } }
+.hint { font-size: 15px; color: var(--muted); margin: 14px 0 0 !important; }
 
 .values { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; padding-bottom: 64px; }
 .values div { border-top: 2px solid var(--ink); padding-top: 12px; }
@@ -70,14 +74,15 @@ footer { border-top: 1px solid var(--line); padding-block: 22px 40px; color: var
       <img src="rookie-track/icon.png" alt="Rookie Track app icon">
       <div>
         <h3>Rookie Track</h3>
-        <span class="tag">Coming soon · iPhone</span>
+        <span class="tag">Try it now in your phone's browser · iPhone app coming soon</span>
         <p>Live basketball stats for parents. Tap what happens during your child's game, then get a clear report the moment it ends, with trends across the season.</p>
         <ul>
           <li>Shots, assists, rebounds, steals, turnovers and minutes, logged live</li>
           <li>Shot chart, game profile and two things to work on</li>
           <li>No account, no ads. Everything stays on your phone.</li>
         </ul>
-        <div class="links"><a href="rookie-track/privacy.html">Privacy policy</a></div>
+        <div class="links"><a class="cta" href="rookie-track/app/">Open Rookie Track</a><a href="rookie-track/privacy.html">Privacy policy</a></div>
+        <p class="hint">On iPhone: open it in Safari, tap Share, then <b>Add to Home Screen</b> so it opens like an app and keeps your games.</p>
       </div>
     </article>
   </section>
