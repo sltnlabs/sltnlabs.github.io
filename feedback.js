@@ -8,7 +8,7 @@
  */
 (function () {
   "use strict";
-  var ENDPOINT = ""; // set to the deployed Worker URL, e.g. "https://sltn-feedback.<account>.workers.dev"
+  var ENDPOINT = "https://sltn-feedback.mosoultan.workers.dev/"; // Cloudflare Worker: rookie-track/infra/feedback-worker
   var FALLBACK_EMAIL = "mosoultan@icloud.com";
   var HIDE_ON = [/\/rookie-track\/app\/live\//]; // keep the live tracker screen clear
 
