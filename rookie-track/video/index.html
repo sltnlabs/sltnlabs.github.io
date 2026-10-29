@@ -319,7 +319,8 @@ footer svg { flex: none; margin-top: 2px; }
 (function () {
 "use strict";
 const $ = (id) => document.getElementById(id);
-const STEP = 0.1, MAX_SEC = 60, VERSION = "0.2.3";
+const STEP = 0.1, MAX_SEC = 60, VERSION = "0.2.4";
+window.SLTN_FEEDBACK = { app: "video-lab", version: VERSION };
 
 /* ============================== language ============================== */
 const STR = {
@@ -1152,4 +1153,5 @@ window.__hoops = { get report() { return report; }, summary: () => summaryImage(
 boot();
 })();
 </script>
+<script src="/feedback.js" defer></script>
 </html>
