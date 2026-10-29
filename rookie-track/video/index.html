@@ -36,7 +36,7 @@ html[lang="ar"] { --display: "Cairo", Arial, sans-serif; --body: "Cairo", "Segoe
 
 * { box-sizing: border-box; }
 [hidden] { display: none !important; }
-body { background: var(--bg); color: var(--ink); font: 400 16px/1.5 var(--body); }
+body { margin: 0; background: var(--bg); color: var(--ink); font: 400 16px/1.5 var(--body); }
 body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 10; background: var(--nav); }
 h1, h2, h3 { font-family: var(--display); font-weight: 700; margin: 0; text-wrap: balance; letter-spacing: 0.2px; }
 h2 { font-size: 26px; line-height: 1.15; }
@@ -316,7 +316,7 @@ footer svg { flex: none; margin-top: 2px; }
 (function () {
 "use strict";
 const $ = (id) => document.getElementById(id);
-const STEP = 0.1, MAX_SEC = 60, VERSION = "0.2.1";
+const STEP = 0.1, MAX_SEC = 60, VERSION = "0.2.2";
 
 /* ============================== language ============================== */
 const STR = {
