@@ -172,6 +172,21 @@ footer svg { flex: none; margin-top: 2px; }
 .err { color: var(--accent-ink); font-weight: 600; font-size: 14px; margin: 0; }
 #vid { position: fixed; left: 0; bottom: 0; width: 2px; height: 2px; opacity: 0.01; pointer-events: none; z-index: -1; }
 @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+.sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+.vctl { display: grid; grid-template-columns: auto auto auto 1fr; align-items: center; gap: 8px; direction: ltr; }
+.vtrack { grid-column: 1 / -1; position: relative; padding-top: 14px; }
+#vseek { width: 100%; margin: 0; accent-color: var(--accent); height: 24px; }
+.vmarks { position: absolute; left: 10px; right: 10px; top: 4px; height: 14px; }
+.vmarks button { position: absolute; top: 0; width: 14px; height: 14px; margin-left: -7px; padding: 0; border-radius: 50%; border: 2px solid var(--surface); cursor: pointer; }
+.vmarks .made { background: #16A34A; } .vmarks .miss { background: #DC2626; } .vmarks .unk { background: #94A3B8; }
+.vbtn { min-width: 48px; height: 44px; padding: 0 10px; border-radius: 10px; border: 1px solid var(--line); background: var(--surface); color: var(--ink); font-weight: 700; font-size: 14px; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 6px; }
+.vbtn:disabled { opacity: .45; cursor: default; }
+.vtime { justify-self: end; font-size: 14px; color: var(--muted); font-variant-numeric: tabular-nums; }
+.ovl { display: flex; align-items: center; gap: 8px; font-size: 14px; font-weight: 600; }
+.ovl input { width: 18px; height: 18px; accent-color: var(--accent); }
+.clipsel { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+.clipsel select { min-height: 44px; border-radius: 10px; border: 1px solid var(--line); background: var(--surface); color: var(--ink); font: inherit; font-weight: 600; padding: 0 12px; max-width: 100%; }
+.lenhint { font-size: 14px; margin: 0; }
 .devbar { background: #FDE68A; color: #3B2A00; font-size: 14px; font-weight: 600; text-align: center; padding: 6px 16px; }
 .devbar a { color: inherit; }
 </style>
@@ -196,7 +211,7 @@ footer svg { flex: none; margin-top: 2px; }
     <div style="display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;align-items:flex-end;margin-bottom:14px">
       <div><h2 id="setup-h" data-t="setup.title"></h2><p class="sub" data-t="setup.sub"></p></div>
       <div style="display:flex;gap:10px;flex-wrap:wrap">
-        <button class="btn" id="use-sample" type="button" data-t="setup.sample"></button>
+        <div class="clipsel"><label class="sr-only" for="clip" data-t="setup.clips"></label><select id="clip"></select></div>
         <label class="btn dark file" for="upload">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 16V4M6 10l6-6 6 6M4 20h16"/></svg>
           <span data-t="setup.upload"></span>
@@ -207,7 +222,16 @@ footer svg { flex: none; margin-top: 2px; }
     <div class="setup">
       <div class="stage">
         <div class="canvasbox"><canvas id="stage" width="960" height="540"></canvas><div class="hint" id="hint"></div></div>
-        <p class="sub ltr" id="vinfo" style="text-align:start"></p>
+        <div class="vctl" id="vctl" hidden>
+          <div class="vtrack"><div class="vmarks" id="vmarks"></div><input type="range" id="vseek" min="0" max="1000" step="1" value="0"></div>
+          <button class="vbtn" id="vplay" type="button"><svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true" id="vicon"><path d="M4 2.5v11l9-5.5z" fill="currentColor"/></svg></button>
+          <button class="vbtn" id="vback" type="button">−0.1s</button>
+          <button class="vbtn" id="vfwd" type="button">+0.1s</button>
+          <span class="vtime" id="vtime">0:00.0 / 0:00.0</span>
+        </div>
+        <label class="ovl" id="ovlwrap" hidden><input type="checkbox" id="ovl" checked> <span data-t="v.overlay"></span></label>
+        <p class="sub" id="vinfo" style="text-align:start;margin:0"></p>
+        <p class="sub lenhint" data-t="len.hint"></p>
       </div>
       <div class="controls">
         <div class="field"><span class="eyebrow" data-t="setup.marking"></span>
@@ -249,7 +273,7 @@ footer svg { flex: none; margin-top: 2px; }
 
   <footer>
     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l8 3v6c0 4.5-3.4 8.3-8 9-4.6-.7-8-4.5-8-9V6z"/></svg>
-    <span><span data-t="footer.privacy"></span> <span class="ltr">v0.2.1 · POC</span></span>
+    <span><span data-t="footer.privacy"></span> <span class="ltr" id="ver"></span></span>
   </footer>
 </main>
 <video id="vid" muted playsinline preload="auto"></video>
@@ -338,7 +362,11 @@ en: {
   "hint.loading": "Loading the video…", "hint.loadingSample": "Loading the sample clip…",
   "p.follow": "Following the player and the ball · {i} of {n} frames", "p.min": "about {n} min left", "p.sec": "about {n} s left", "p.shots": "Finding shots and measuring them", "p.drawing": "Drawing the evidence",
   "err.video": "This file could not be opened as a video. Try an MP4 or MOV from your phone.", "err.sample": "The sample clip could not be loaded.", "err.runtime": "The analysis runtime did not load. Check your connection and reload the page.", "err.model": "Could not load the analysis model.", "err.browser": "This browser won't let the page step through the video. Try Chrome, or the latest Safari.",
-  "tips.title": "How to film for good results", "tips.1": "Phone on a tripod or a steady surface, side-on or at 45° to the shooter.", "tips.2": "Whole body and the rim in the frame, in daylight or a well-lit gym.", "tips.3": "One shooter, 15–60 seconds, several shots from the same spot.",
+  "tips.title": "How to film for good results", "tips.1": "Phone on a tripod or a steady surface, side-on or at 45° to the shooter.", "tips.2": "Whole body and the rim in the frame, in daylight or a well-lit gym.", "tips.3": "One shooter, 15–30 seconds (60 at most), 3–6 shots from the same spot.",
+  "setup.clips": "Test clips", "clip.choose": "Try a test clip…", "clip.sample": "Practice · 2 makes, 3 misses · 17 s", "clip.c1": "1 make, 1 miss · 7 s", "clip.c2": "2 makes, 2 misses · 13 s", "clip.c3": "Hard: camera angle changes · 19 s",
+  "len.hint": "Recommended length: 15–30 seconds with 3–6 shots. Up to 60 seconds is analysed, starting where you mark the player.", "len.long": "longer than the 30 s we recommend, so analysis takes longer", "len.cut": "only {n} s from your mark are analysed",
+  "v.play": "Play", "v.pause": "Pause", "v.back": "Back 0.1 second", "v.fwd": "Forward 0.1 second", "v.pos": "Position in the video", "v.overlay": "Show the analysis on the video", "v.shot": "Shot {n}: {r}. Jump here.", "v.made": "made", "v.missed": "missed", "v.unknown": "result unknown",
+  "hint.pauseFirst": "Pause the video, then tap the player", "hint.markedAt": "Player marked at {t}. Analysis starts here. Tap again to change.",
   "banner.example": "Below is a run on the sample clip. Press <b>Analyse</b> to run it live in your browser, or upload your own video.",
   "empty.title": "Your report appears here", "empty.sub": "Mark the player on the first frame and press Analyse.",
   "footer.privacy": "No face recognition is used: the player is picked by your tap and followed by position. Anyone else is pixelated in evidence frames. The sample clip is public test footage of an adult player, used for testing only.",
@@ -401,7 +429,11 @@ ar: {
   "hint.loading": "جارٍ تحميل الفيديو…", "hint.loadingSample": "جارٍ تحميل المقطع التجريبي…",
   "p.follow": "تتبّع اللاعب والكرة · {i} من {n} إطاراً", "p.min": "حوالي {n} دقيقة متبقية", "p.sec": "حوالي {n} ثانية متبقية", "p.shots": "البحث عن الرميات وقياسها", "p.drawing": "تجهيز صور الأدلة",
   "err.video": "تعذّر فتح هذا الملف كفيديو. جرّب ملف MP4 أو MOV من هاتفك.", "err.sample": "تعذّر تحميل المقطع التجريبي.", "err.runtime": "لم يتم تحميل محرك التحليل. تحقّق من الاتصال وأعد تحميل الصفحة.", "err.model": "تعذّر تحميل نموذج التحليل.", "err.browser": "هذا المتصفح لا يسمح للصفحة بالتنقّل داخل الفيديو. جرّب Chrome أو أحدث إصدار من Safari.",
-  "tips.title": "كيف تصوّر للحصول على أفضل النتائج", "tips.1": "ضع الهاتف على حامل أو سطح ثابت، من الجانب أو بزاوية 45° من الرامي.", "tips.2": "يجب أن يظهر الجسم كاملاً والسلة في الكادر، في ضوء النهار أو في صالة جيدة الإضاءة.", "tips.3": "رامٍ واحد، من 15 إلى 60 ثانية، وعدة رميات من النقطة نفسها.",
+  "tips.title": "كيف تصوّر للحصول على أفضل النتائج", "tips.1": "ضع الهاتف على حامل أو سطح ثابت، من الجانب أو بزاوية 45° من الرامي.", "tips.2": "يجب أن يظهر الجسم كاملاً والسلة في الكادر، في ضوء النهار أو في صالة جيدة الإضاءة.", "tips.3": "رامٍ واحد، من 15 إلى 30 ثانية (60 كحد أقصى)، و3 إلى 6 رميات من النقطة نفسها.",
+  "setup.clips": "مقاطع تجريبية", "clip.choose": "جرّب مقطعاً تجريبياً…", "clip.sample": "تمرين · تسديدتان ناجحتان و3 ضائعة · 17 ث", "clip.c1": "تسديدة ناجحة وأخرى ضائعة · 7 ث", "clip.c2": "تسديدتان ناجحتان وتسديدتان ضائعتان · 13 ث", "clip.c3": "صعب: زاوية الكاميرا تتغيّر · 19 ث",
+  "len.hint": "الطول الموصى به: من 15 إلى 30 ثانية مع 3 إلى 6 تسديدات. يُحلَّل حتى 60 ثانية بدءاً من لحظة تحديد اللاعب.", "len.long": "أطول من 30 ث الموصى بها، لذا يستغرق التحليل وقتاً أطول", "len.cut": "تُحلَّل {n} ث فقط بدءاً من لحظة التحديد",
+  "v.play": "تشغيل", "v.pause": "إيقاف مؤقت", "v.back": "رجوع 0.1 ثانية", "v.fwd": "تقديم 0.1 ثانية", "v.pos": "الموضع في الفيديو", "v.overlay": "اعرض التحليل على الفيديو", "v.shot": "التسديدة {n}: {r}. انتقل إليها.", "v.made": "ناجحة", "v.missed": "ضائعة", "v.unknown": "النتيجة غير معروفة",
+  "hint.pauseFirst": "أوقف الفيديو مؤقتاً ثم انقر على اللاعب", "hint.markedAt": "تم تحديد اللاعب عند {t}. يبدأ التحليل من هنا. انقر مرة أخرى للتغيير.",
   "banner.example": "فيما يلي نتيجة تحليل المقطع التجريبي. اضغط <b>حلّل</b> لتشغيل التحليل مباشرة في متصفحك، أو ارفع الفيديو الخاص بك.",
   "empty.title": "سيظهر تقريرك هنا", "empty.sub": "حدّد اللاعب في الإطار الأول ثم اضغط حلّل.",
   "footer.privacy": "لا نستخدم التعرّف على الوجوه: يُحدَّد اللاعب بنقرتك ويُتابَع حسب موقعه. يظهر أي شخص آخر مموّهاً في صور الأدلة. المقطع التجريبي لقطات عامة للاعب بالغ، تُستخدم للاختبار فقط.",
@@ -459,6 +491,7 @@ function applyLang() {
   $("lang").textContent = LANG === "ar" ? "English" : "العربية"; $("lang").setAttribute("lang", LANG === "ar" ? "en" : "ar");
   $("modes").setAttribute("aria-label", t("setup.marking"));
   $("stage").setAttribute("aria-label", t("hint.tapPlayer"));
+  buildClipList(); $("vseek").setAttribute("aria-label", t("v.pos")); $("vback").setAttribute("aria-label", t("v.back")); $("vfwd").setAttribute("aria-label", t("v.fwd")); $("ver").textContent = "v" + VERSION + " · POC"; syncCtl(); renderMarks();
   setStatus(modelState);
   if (src) updateMarks(); updateSessionNote();
   if (report) { renderReport(); if (report.example) showBanner(); }
@@ -783,7 +816,19 @@ function idealImage(key, ideal) {
 
 /* ============================== video + set-up ============================== */
 const video = $("vid"), stage = $("stage"), sctx = stage.getContext("2d");
-let src = null, isSample = false, tap = null, rimPt = null, mode = "player", busy = false, report = null, prevRun = null, sampleUrl = null;
+let src = null, isSample = false, tap = null, tapT = null, rimPt = null, mode = "player", busy = false, report = null, prevRun = null, clipId = null;
+const CLIPS = [
+  { id: "sample", file: "data/sample.mp4", label: "clip.sample", tap: [175, 330], rim: [624, 182], age: "Adult" },
+  { id: "c1", file: "data/clip-1-make-1-miss.mp4", label: "clip.c1", tap: [92, 360], rim: [624, 182], age: "Adult" },
+  { id: "c2", file: "data/clip-2-make-2-miss.mp4", label: "clip.c2", tap: [75, 350], rim: [622, 182], age: "Adult" },
+  { id: "c3", file: "data/clip-multi-angle.mp4", label: "clip.c3", tap: [190, 320], rim: [487, 192], age: "Adult" },
+];
+const clipUrls = {};
+function buildClipList() {
+  const s = $("clip"), cur = clipId || "";
+  s.innerHTML = `<option value="">${esc(t("clip.choose"))}</option>` + CLIPS.map((c) => `<option value="${c.id}">${esc(t(c.label))}</option>`).join("");
+  s.value = cur; s.setAttribute("aria-label", t("setup.clips"));
+}
 function seek(v, tt) {
   return new Promise((res) => {
     const done = () => { v.removeEventListener("seeked", done); clearTimeout(to); res(); };
@@ -791,46 +836,114 @@ function seek(v, tt) {
     v.addEventListener("seeked", done); v.currentTime = Math.min(tt, Math.max(0, v.duration - 0.01));
   });
 }
-async function openSample() {
-  if (!sampleUrl) { $("hint").textContent = t("hint.loadingSample"); const r = await fetch("../data/sample.mp4"); if (!r.ok) throw new Error(t("err.sample")); sampleUrl = URL.createObjectURL(await r.blob()); }
-  return openVideo(sampleUrl, true);
+async function openSample(id = "sample") {
+  const c = CLIPS.find((x) => x.id === id); if (!c) return;
+  if (!clipUrls[id]) { $("hint").textContent = t("hint.loadingSample"); const r = await fetch(c.file); if (!r.ok) throw new Error(t("err.sample")); clipUrls[id] = URL.createObjectURL(await r.blob()); }
+  await openVideo(clipUrls[id], true, c);
 }
-async function openVideo(url, sample) {
-  stopPlayer(); src = url; isSample = sample; tap = null; rimPt = null; setMode("player");
+async function openVideo(url, sample, clip = null) {
+  stopPlayer(); src = url; isSample = sample; clipId = clip ? clip.id : null; $("clip").value = clipId || ""; tap = null; tapT = null; rimPt = null; setMode("player");
   $("hint").textContent = t("hint.loading"); $("go").disabled = true; $("err").hidden = true;
   video.src = url;
   await new Promise((res, rej) => { video.onloadeddata = res; video.onerror = () => rej(new Error(t("err.video"))); });
   await seek(video, 0.05);
   stage.width = video.videoWidth; stage.height = video.videoHeight;
-  $("vinfo").textContent = `${video.videoWidth}×${video.videoHeight} · ${video.duration.toFixed(1)} s` + (video.duration > MAX_SEC ? ` · ≤ ${MAX_SEC} s` : "");
-  if (sample) { tap = [175, 330]; rimPt = [624, 182]; $("age").value = "Adult"; }
-  drawStage(); updateMarks();
+  const d = video.duration;
+  $("vinfo").innerHTML = `<span class="ltr">${video.videoWidth}×${video.videoHeight} · ${d.toFixed(1)} s</span>` + (d > MAX_SEC ? ` · ${esc(t("len.cut", { n: MAX_SEC }))}` : d > 30 ? ` · ${esc(t("len.long"))}` : "");
+  if (clip) { tap = clip.tap; tapT = 0.05; rimPt = clip.rim; $("age").value = clip.age; }
+  $("vctl").hidden = false; drawStage(); updateMarks(); syncCtl(); renderMarks();
+}
+function reportForClip() {
+  if (!report || !src) return null;
+  if (report.example) return clipId === "sample" ? report : null;
+  return report.src === src ? report : null;
 }
 function drawStage() {
   sctx.drawImage(video, 0, 0, stage.width, stage.height);
-  const u = Math.max(stage.width, stage.height) / 960, fs = Math.max(12, Math.round(16 * u));
-  if (tap) { sctx.strokeStyle = C.accent; sctx.lineWidth = 4 * u; sctx.beginPath(); sctx.arc(tap[0], tap[1], 26 * u, 0, 2 * Math.PI); sctx.stroke(); sctx.fillStyle = C.accent; sctx.beginPath(); sctx.arc(tap[0], tap[1], 5 * u, 0, 2 * Math.PI); sctx.fill(); label(sctx, "PLAYER", tap[0] + 30 * u, tap[1] - 14 * u, C.accent, C.ink, fs); }
+  const u = Math.max(stage.width, stage.height) / 960, fs = Math.max(12, Math.round(16 * u)), R = reportForClip(), now = video.currentTime;
+  const showOvl = !busy && R && $("ovl").checked && R.frames && R.frames.length;
+  $("ovlwrap").hidden = !(R && !busy);
+  if (showOvl) {
+    const f = R.frames.reduce((a, b) => Math.abs(b.t - now) < Math.abs(a.t - now) ? b : a);
+    if (Math.abs(f.t - now) < 0.15) drawLive(f, stage.width, stage.height);
+    const s = R.shots.find((x) => Math.abs(x.t - now) < 0.2);
+    if (s) label(sctx, `SHOT ${s.n} · ${s.made === true ? "MADE" : s.made === false ? "MISSED" : "RELEASE"}`, 16 * u, stage.height - 40 * u, s.made === true ? "#16A34A" : s.made === false ? "#DC2626" : C.accent, "#FFFFFF", fs);
+  }
+  if (tap && !(showOvl && tapT !== null && Math.abs(now - tapT) > 0.2)) { sctx.strokeStyle = C.accent; sctx.lineWidth = 4 * u; sctx.beginPath(); sctx.arc(tap[0], tap[1], 26 * u, 0, 2 * Math.PI); sctx.stroke(); sctx.fillStyle = C.accent; sctx.beginPath(); sctx.arc(tap[0], tap[1], 5 * u, 0, 2 * Math.PI); sctx.fill(); label(sctx, "PLAYER", tap[0] + 30 * u, tap[1] - 14 * u, C.accent, C.ink, fs); }
   if (rimPt) { const b = rimBox(); sctx.strokeStyle = "#7EA2FF"; sctx.lineWidth = 3 * u; sctx.strokeRect(b[0], b[1], b[2] - b[0], b[3] - b[1]); label(sctx, "RIM", b[2] + 8 * u, b[1], "#7EA2FF", C.ink, fs); }
 }
 function rimBox() { const s = Math.max(stage.width, stage.height), w = 0.05 * s, h = 0.021 * s; return [rimPt[0] - w / 2, rimPt[1] - h / 2, rimPt[0] + w / 2, rimPt[1] + h / 2]; }
 function updateMarks() {
   $("m-player").textContent = t(tap ? "setup.marked" : "setup.notMarked"); $("m-player").className = tap ? "ok-t" : "no-t";
   $("m-rim").textContent = t(rimPt ? "setup.rimMarked" : "setup.rimNot"); $("m-rim").className = rimPt ? "ok-t" : "no-t";
-  $("hint").textContent = mode === "player" ? t(tap ? "hint.playerMarked" : "hint.tapPlayer") : t(rimPt ? "hint.rimMarked" : "hint.tapRim");
+  $("hint").textContent = vplaying ? t("hint.pauseFirst") : mode === "player" ? (tap ? (tapT > 0.2 ? t("hint.markedAt", { t: fmtT(tapT) }) : t("hint.playerMarked")) : t("hint.tapPlayer")) : t(rimPt ? "hint.rimMarked" : "hint.tapRim");
+  ["vplay", "vback", "vfwd", "vseek"].forEach((k) => { $(k).disabled = busy; });
   $("go").disabled = !tap || busy || !detS;
 }
 function setMode(m) { mode = m; $("mode-player").setAttribute("aria-pressed", m === "player"); $("mode-rim").setAttribute("aria-pressed", m === "rim"); if (src) updateMarks(); }
 stage.addEventListener("click", (e) => {
   if (busy || !src) return;
+  if (vplaying) { stopStage(); updateMarks(); return; }
   const r = stage.getBoundingClientRect(), sc = Math.min(r.width / stage.width, r.height / stage.height), ox = (r.width - stage.width * sc) / 2, oy = (r.height - stage.height * sc) / 2;
   const x = (e.clientX - r.left - ox) / sc, y = (e.clientY - r.top - oy) / sc;
-  if (mode === "player") { tap = [x, y]; if (!rimPt) setMode("rim"); } else rimPt = [x, y];
+  if (mode === "player") { tap = [x, y]; tapT = video.currentTime; if (!rimPt) setMode("rim"); } else rimPt = [x, y];
   drawStage(); updateMarks();
 });
 $("mode-player").addEventListener("click", () => setMode("player"));
 $("mode-rim").addEventListener("click", () => setMode("rim"));
-$("use-sample").addEventListener("click", () => openSample().catch(showErr));
-$("upload").addEventListener("change", (e) => { const f = e.target.files[0]; if (f) openVideo(URL.createObjectURL(f), false).catch(showErr); });
+$("clip").addEventListener("change", (e) => { if (e.target.value) openSample(e.target.value).catch(showErr); });
+$("upload").addEventListener("change", (e) => { const f = e.target.files[0]; if (f) openVideo(URL.createObjectURL(f), false).catch(showErr); e.target.value = ""; });
+
+/* ============================== stage video player ============================== */
+let vplaying = false, seekBusy = false, seekNext = null;
+const fmtT = (s) => { s = Math.max(0, s || 0); const m = Math.floor(s / 60), r = s - m * 60; return `${m}:${r < 10 ? "0" : ""}${r.toFixed(1)}`; };
+function syncCtl() {
+  if (!src || !video.duration) return;
+  const d = video.duration, now = video.currentTime;
+  if (!seekBusy) $("vseek").value = Math.round(now / d * 1000);
+  $("vtime").textContent = `${fmtT(now)} / ${fmtT(d)}`;
+  $("vicon").innerHTML = vplaying ? '<path d="M3.5 2.5h3v11h-3zM9.5 2.5h3v11h-3z" fill="currentColor"/>' : '<path d="M4 2.5v11l9-5.5z" fill="currentColor"/>';
+  $("vplay").setAttribute("aria-label", t(vplaying ? "v.pause" : "v.play"));
+}
+function stopStage() { if (vplaying) { vplaying = false; video.pause(); syncCtl(); } }
+function stageTick() {
+  if (!vplaying) return;
+  drawStage(); syncCtl();
+  if (video.paused || video.ended) { vplaying = false; syncCtl(); updateMarks(); return; }
+  requestAnimationFrame(stageTick);
+}
+async function playStage() {
+  if (busy || !src) return;
+  stopPlayer();
+  if (video.ended || video.currentTime >= video.duration - 0.05) await seek(video, 0);
+  video.playbackRate = 1;
+  try { await video.play(); } catch (e) { return; }
+  vplaying = true; updateMarks(); requestAnimationFrame(stageTick);
+}
+async function seekStage(tt) {
+  stopStage(); seekNext = Math.max(0, Math.min(tt, video.duration - 0.01));
+  if (seekBusy) return;
+  seekBusy = true;
+  while (seekNext !== null) { const x = seekNext; seekNext = null; await seek(video, x); drawStage(); $("vtime").textContent = `${fmtT(video.currentTime)} / ${fmtT(video.duration)}`; }
+  seekBusy = false; syncCtl(); updateMarks();
+}
+$("vplay").addEventListener("click", () => { if (vplaying) { stopStage(); updateMarks(); } else playStage(); });
+$("vback").addEventListener("click", () => seekStage(video.currentTime - STEP));
+$("vfwd").addEventListener("click", () => seekStage(video.currentTime + STEP));
+$("vseek").addEventListener("input", (e) => { if (video.duration) seekStage(e.target.value / 1000 * video.duration); });
+$("ovl").addEventListener("change", () => drawStage());
+function renderMarks() {
+  const box = $("vmarks"), R = reportForClip(); box.innerHTML = "";
+  if (!R || busy || !video.duration) return;
+  R.shots.forEach((s) => {
+    const b = document.createElement("button"); b.type = "button";
+    b.className = s.made === true ? "made" : s.made === false ? "miss" : "unk";
+    b.style.left = (s.t / video.duration * 100).toFixed(2) + "%";
+    b.setAttribute("aria-label", t("v.shot", { n: s.n, r: t(s.made === true ? "v.made" : s.made === false ? "v.missed" : "v.unknown") })); b.title = b.getAttribute("aria-label");
+    b.addEventListener("click", () => seekStage(Math.max(0, s.t - 0.8)));
+    box.appendChild(b);
+  });
+}
 function showErr(e) { $("err").hidden = false; $("err").textContent = e.message || String(e); busy = false; $("prog").hidden = true; updateMarks(); }
 
 /* ============================== frame capture ============================== */
@@ -884,8 +997,9 @@ async function run() {
   if (!tap) return;
   try { const pp = video.play(); if (pp) { await pp; } video.pause(); } catch (e) {}   // started from the tap, so Safari lets us play later
   busy = true; stopPlayer(); updateMarks(); $("err").hidden = true; $("prog").hidden = false;
-  const W = video.videoWidth, H = video.videoHeight, dur = Math.min(video.duration, MAX_SEC), age = $("age").value, code = codeVal();
-  const times = []; for (let tt = 0.05; tt < dur - 0.02; tt += STEP) times.push(+tt.toFixed(3));
+  const t0s = Math.max(0.05, tapT || 0.05), tEnd = Math.min(video.duration, t0s + MAX_SEC);
+  const W = video.videoWidth, H = video.videoHeight, dur = tEnd - t0s, age = $("age").value, code = codeVal();
+  const times = []; for (let tt = t0s; tt < tEnd - 0.02; tt += STEP) times.push(+tt.toFixed(3));
   const frames = []; let prev = null, lost = 0; const t0 = performance.now();
   grab.width = W; grab.height = H; await probeSeek(W, H);
   await capture(times, W, H, async (tt, i) => {
@@ -903,7 +1017,7 @@ async function run() {
   shots.forEach((s) => measure(frames, ball, s, rimPt ? rimBox() : null));
   const sc = scoreSession(shots, age), fb = buildFindings(sc.pm, shots, age);
   const hist = loadHist(), past = code ? (hist[code] || []) : [];
-  const R = { v: VERSION, W, H, age, code, session: code ? past.length + 1 : null, date: new Date().toISOString(), duration: dur, frames, shots, ...sc, ...fb, sample: isSample,
+  const R = { v: VERSION, W, H, age, code, session: code ? past.length + 1 : null, date: new Date().toISOString(), duration: dur, start: t0s, src, frames, shots, ...sc, ...fb, sample: isSample,
     made: shots.filter((s) => s.made).length, madeKnown: shots.filter((s) => s.made !== null).length,
     quality: { tracked: frames.filter((f) => f.target).length / frames.length, pose: frames.filter((f) => f.kps).length / frames.length, ball: ball.filter(Boolean).length / frames.length },
     seconds: (performance.now() - t0) / 1000, capture: grabMode };
@@ -915,7 +1029,7 @@ async function run() {
   prevRun = past.length ? { ...past.at(-1), n: past.length } : null;
   if (code && shots.length) { hist[code] = past.concat([{ date: R.date, overall: R.overall, axes: R.axes, age }]).slice(-20); saveHist(hist); }
   report = R; busy = false; $("prog").hidden = true;
-  await seek(video, 0.05); drawStage(); updateMarks(); updateSessionNote();
+  await seek(video, t0s); drawStage(); updateMarks(); updateSessionNote(); syncCtl(); renderMarks();
   $("banner").hidden = true; renderReport();
   document.getElementById("report").scrollIntoView({ behavior: "smooth", block: "start" });
   window.__lastReport = R;
@@ -934,7 +1048,7 @@ function drawLive(f, W, H) {
 
 /* ============================== shot player ============================== */
 let playing = null;
-function stopPlayer() { if (playing) { playing.stop = true; playing = null; video.pause(); } }
+function stopPlayer() { stopStage(); if (playing) { playing.stop = true; playing = null; video.pause(); } }
 async function playShot(n) {
   stopPlayer();
   const R = report, s = R.shots.find((x) => x.n === n); if (!s || !src) return;
@@ -1144,8 +1258,8 @@ function quality() {
 /* ============================== boot ============================== */
 async function boot() {
   applyLang();
-  openSample().catch(showErr);
-  try { const r = await fetch("../data/sample-report.json"); if (r.ok) { report = await r.json(); report.example = true; renderReport(); showBanner(); } } catch (e) {}
+  openSample("sample").catch(showErr);
+  try { const r = await fetch("data/sample-report.json"); if (r.ok) { report = await r.json(); report.example = true; renderReport(); showBanner(); } } catch (e) {}
   try { await loadModels(); setStatus("ok"); } catch (e) { setStatus("bad"); showErr(e); }
   updateMarks();
 }
