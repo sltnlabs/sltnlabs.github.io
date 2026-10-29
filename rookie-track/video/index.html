@@ -171,11 +171,14 @@ footer { color: var(--muted); font-size: 14px; display: flex; gap: 10px; align-i
 footer svg { flex: none; margin-top: 2px; }
 .err { color: var(--accent-ink); font-weight: 600; font-size: 14px; margin: 0; }
 #vid { position: fixed; left: 0; bottom: 0; width: 2px; height: 2px; opacity: 0.01; pointer-events: none; z-index: -1; }
+.homelink { flex-basis: 100%; color: var(--nav-muted); font-size: 14px; font-weight: 600; text-decoration: none; }
+.homelink:hover { color: var(--nav-ink); text-decoration: underline; }
 @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
 </style>
 
 <header class="top">
   <div class="wrap">
+    <a class="homelink" href="/" data-t="nav.home"></a>
     <div class="brand">
       <svg width="28" height="28" viewBox="0 0 30 30" aria-hidden="true"><circle cx="15" cy="15" r="13" fill="none" stroke="#F97316" stroke-width="2.5"/><path d="M2 15h26M15 2v26M6 6c5 4 5 14 0 18M24 6c-5 4-5 14 0 18" fill="none" stroke="#F97316" stroke-width="2"/></svg>
       ROOKIE TRACK <span style="font-size:15px;letter-spacing:1px;color:var(--nav-muted);margin-left:4px">VIDEO LAB</span>
@@ -316,13 +319,13 @@ footer svg { flex: none; margin-top: 2px; }
 (function () {
 "use strict";
 const $ = (id) => document.getElementById(id);
-const STEP = 0.1, MAX_SEC = 60, VERSION = "0.2.2";
+const STEP = 0.1, MAX_SEC = 60, VERSION = "0.2.3";
 
 /* ============================== language ============================== */
 const STR = {
 en: {
   "status.loading": "Loading analysis models…", "status.ready": "Analysis models ready", "status.failed": "Models failed to load",
-  "setup.title": "Analyse a shooting session", "setup.sub": "Everything runs in this browser. The video is never uploaded anywhere.",
+  "nav.home": "← SLTN Labs home", "setup.title": "Analyse a shooting session", "setup.sub": "Everything runs in this browser. The video is never uploaded anywhere.",
   "setup.sample": "Use the sample clip", "setup.upload": "Upload your video", "setup.marking": "What are you marking?",
   "setup.modePlayer": "The player", "setup.modeRim": "The rim (optional)", "setup.playerLbl": "Player:", "setup.rimLbl": "Rim:",
   "setup.notMarked": "not marked yet", "setup.marked": "marked", "setup.rimMarked": "marked, so makes and misses are counted", "setup.rimNot": "not marked, so makes are not counted",
@@ -385,7 +388,7 @@ en: {
 },
 ar: {
   "status.loading": "جارٍ تحميل نماذج التحليل…", "status.ready": "نماذج التحليل جاهزة", "status.failed": "تعذّر تحميل النماذج",
-  "setup.title": "حلّل جلسة تصويب", "setup.sub": "يتم كل شيء داخل هذا المتصفح، ولا يُرفع الفيديو إلى أي مكان.",
+  "nav.home": "→ الصفحة الرئيسية لـ SLTN Labs", "setup.title": "حلّل جلسة تصويب", "setup.sub": "يتم كل شيء داخل هذا المتصفح، ولا يُرفع الفيديو إلى أي مكان.",
   "setup.sample": "استخدم المقطع التجريبي", "setup.upload": "ارفع الفيديو الخاص بك", "setup.marking": "ماذا تحدّد الآن؟",
   "setup.modePlayer": "اللاعب", "setup.modeRim": "السلة (اختياري)", "setup.playerLbl": "اللاعب:", "setup.rimLbl": "السلة:",
   "setup.notMarked": "لم يُحدَّد بعد", "setup.marked": "تم التحديد", "setup.rimMarked": "تم التحديد، لذا تُحسب الرميات الناجحة والضائعة", "setup.rimNot": "لم تُحدَّد، لذا لا تُحسب الرميات الناجحة",
