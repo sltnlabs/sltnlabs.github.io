@@ -132,10 +132,18 @@ ol.steps { margin: 0; padding-inline-start: 20px; display: grid; gap: 6px; font-
     </div>
     <p class="muted" id="setupMsg">Everything runs in this browser. Nothing is uploaded.</p>
   </section>
+  <section class="card" id="tests">
+    <h2>Try a test clip</h2>
+    <p class="muted">Each clip opens with the rim already marked and starts counting straight away. Compare the score with what really happens.</p>
+    <div class="row"><select id="clipSel" aria-label="Test clip" style="flex:1;min-height:48px;border-radius:12px;border:1px solid var(--line);background:var(--surface);color:var(--ink);font:inherit;font-weight:600;padding:0 12px;max-width:100%"></select>
+      <button class="btn dark" id="clipGo">Play</button></div>
+    <p class="muted" id="clipInfo"></p>
+  </section>
 
   <!-- 2. stage: camera or video, rim taps, live view -->
   <section id="game" class="hidden" style="display:grid;gap:12px">
     <div class="board" id="board"></div>
+    <p class="muted hidden" id="testNote" style="background:var(--warn-soft);color:var(--warn);border-radius:10px;padding:8px 12px;font-weight:600"></p>
     <div class="stage" id="stage" style="aspect-ratio:16/9">
       <video id="vid" playsinline muted></video>
       <canvas id="ov" aria-label="Camera view. Tap the rim when asked."></canvas>
@@ -581,7 +589,8 @@ async function endGame() {
   stop();
   for (const r of [S.rims.L, S.rims.R]) if (r && r.pend !== null && r.pend !== undefined) { r.pend = null; await made(r); } // a make still being confirmed counts
   S.mode = "ended"; save();
-  $("hint").textContent = `Final: ${S.teams[0].name} ${total(0)} – ${total(1)} ${S.teams[1].name}`; $("hint").classList.remove("hidden");
+  const camMade = S.events.filter((e) => e.auto).length;
+  $("hint").textContent = `Final: ${S.teams[0].name} ${total(0)} – ${total(1)} ${S.teams[1].name}` + (testClip ? ` · camera counted ${camMade} of ${testClip.made} makes` : ""); $("hint").classList.remove("hidden");
   if (S.source === "camera" && vid.srcObject) { vid.srcObject.getTracks().forEach((t) => t.stop()); }
   $("pause").disabled = true; render();
   window.__done = true;
@@ -591,7 +600,7 @@ async function endGame() {
 let wake = null;
 async function openGame(source) {
   S.source = source; S.events = []; S.period = 1; S.rims = { L: null, R: null }; frameNo = 0; startWall = performance.now();
-  $("setup").classList.add("hidden"); $("game").classList.remove("hidden"); document.body.classList.add("playing"); render();
+  $("setup").classList.add("hidden"); $("tests").classList.add("hidden"); $("game").classList.remove("hidden"); document.body.classList.add("playing"); render();
   if (!det && detState !== "bad") loadDetector();
   try { if (navigator.wakeLock) wake = await navigator.wakeLock.request("screen"); } catch (e) {}
 }
@@ -603,13 +612,44 @@ $("useCam").onclick = async () => {
     grab(vid); fitStage(); aimStep("L"); start();
   } catch (e) { $("setupMsg").textContent = "The camera could not open. Allow camera access for this site, or use a video instead."; $("setup").classList.remove("hidden"); $("game").classList.add("hidden"); }
 };
-$("file").onchange = async (e) => { const f = e.target.files[0]; if (f) await openFile(URL.createObjectURL(f)); };
+$("file").onchange = async (e) => { const f = e.target.files[0]; if (!f) return; try { await openFile(URL.createObjectURL(f)); } catch (x) { $("setupMsg").textContent = "This video could not be opened in the browser. Try an MP4 (H.264) file."; } };
+const loadVideo = (url) => new Promise((ok, bad) => {
+  const done = (f) => () => { vid.removeEventListener("loadeddata", y); vid.removeEventListener("error", n); f(); };
+  const y = done(ok), n = done(() => bad(new Error("video")));
+  vid.addEventListener("loadeddata", y); vid.addEventListener("error", n); vid.src = url;
+});
 async function openFile(url) {
-  await openGame("file"); vid.src = url;
-  await new Promise((r) => vid.addEventListener("loadeddata", r, { once: true }));
+  const urls = Array.isArray(url) ? url : [url]; let ok = false;
+  for (const u of urls) { try { await loadVideo(u); ok = true; break; } catch (e) {} }
+  if (!ok) throw new Error("video");
+  await openGame("file");
   await seek(0.05); grab(vid); fitStage(); aimStep("L"); draw();
 }
 window.addEventListener("resize", () => { fitStage(); draw(); });
+
+/* ------------------------------------------------------------ test clips */
+// rim: [x, y, half-width] in video pixels (960×540). "made" is what really happens, checked frame by frame.
+const CLIPS = [
+  { file: ["data/sample.mp4", "../data/sample.mp4"], label: "Practice · still camera (17 s)", rim: [622, 180, 21], made: 2, truth: "2 made (at about 0:12 and 0:16), 3 missed" },
+  { file: ["data/clip-1-make-1-miss.mp4", "../data/clip-1-make-1-miss.mp4"], label: "1 make, 1 miss · still camera (7 s)", rim: [622, 180, 21], made: 1, truth: "1 made (about 0:06), 1 missed" },
+  { file: ["data/clip-2-make-2-miss.mp4", "../data/clip-2-make-2-miss.mp4"], label: "2 makes, 2 misses · still camera (13 s)", rim: [620, 180, 21], made: 2, truth: "2 made (about 0:09 and 0:12), 2 missed" },
+  { file: ["data/clip-multi-angle.mp4", "../data/clip-multi-angle.mp4"], label: "Wide shot, rim far away (19 s)", rim: [488, 187, 14], made: 5, truth: "5 made (0:06, 0:09, 0:12, 0:15, 0:18), 1 missed (0:01)" },
+  { file: "data/handheld-practice.mp4", label: "Hand-held: camera moving (17 s)", rim: [644, 117, 25.2], made: 2, truth: "2 made (about 0:12 and 0:16), 3 missed" },
+  { file: "data/handheld-wide.mp4", label: "Hard: hand-held wide shot (19 s)", rim: [451, 166, 16.8], made: 5, truth: "5 made, 1 missed. Expect some makes to be missed here." },
+];
+$("clipSel").innerHTML = CLIPS.map((c, i) => `<option value="${i}">${esc(c.label)}</option>`).join("");
+const clipInfo = () => { const c = CLIPS[+$("clipSel").value]; $("clipInfo").textContent = `What really happens: ${c.truth}.`; };
+$("clipSel").onchange = clipInfo; clipInfo();
+let testClip = null;
+$("clipGo").onclick = async () => {
+  const c = CLIPS[+$("clipSel").value]; testClip = c; $("clipGo").disabled = true;
+  try {
+    if (!det && detState !== "bad") await loadDetector();
+    await openFile(c.file); S.rims.R = null; S.rims.L = newRim("L", c.rim[0], c.rim[1], c.rim[2]); goLive();
+    $("testNote").textContent = `Test clip · really ${c.truth}.`; $("testNote").classList.remove("hidden");
+  } catch (e) { $("clipInfo").textContent = "The clip could not open. Check your connection and try again."; }
+  $("clipGo").disabled = false;
+};
 
 /* ------------------------------------------------------------ test hook (used by the automated accuracy check) */
 window.SL = { S, openFile, loadDetector, setRims(list) { for (const [id, x, y, rw] of list) S.rims[id] = newRim(id, x, y, rw); }, goLive, total, ready: () => detState };
