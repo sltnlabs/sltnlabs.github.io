@@ -1,0 +1,619 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Score Lab · Rookie Track · SLTN Labs</title>
+<meta name="description" content="Experiment: point the phone at the game and the score counts itself. Runs entirely in your browser.">
+<meta name="theme-color" content="#0F1B2D">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Barlow:wght@400;500;600;700&display=swap">
+<style>
+:root {
+  --bg: #EEF1F5; --surface: #FFFFFF; --sunk: #F5F7FA; --line: #DCE2EA;
+  --ink: #0F1B2D; --muted: #566174; --nav: #0F1B2D; --nav-ink: #FFFFFF; --nav-muted: #B8C2D1;
+  --accent: #C2410C; --accent-mark: #F97316; --accent-soft: #FFF1E7; --accent-ink: #9A3412;
+  --good: #15803D; --good-soft: #DCFCE7; --warn: #92400E; --warn-soft: #FEF3C7; --bad: #B91C1C;
+  --display: "Barlow Condensed", "Arial Narrow", Arial, sans-serif;
+  --body: "Barlow", "Segoe UI", Roboto, Arial, sans-serif;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #0B1220; --surface: #141E2E; --sunk: #1A2638; --line: #2A3850;
+  --ink: #E8EDF4; --muted: #9AA7BA; --nav: #070C16; --nav-muted: #9AA7BA;
+  --accent: #F97316; --accent-mark: #FB923C; --accent-soft: #3A1F10; --accent-ink: #FDBA74;
+  --good: #4ADE80; --good-soft: #10301E; --warn: #FCD34D; --warn-soft: #3A2E0E; --bad: #F87171; color-scheme: dark } }
+:root[data-theme="dark"] {
+  --bg: #0B1220; --surface: #141E2E; --sunk: #1A2638; --line: #2A3850;
+  --ink: #E8EDF4; --muted: #9AA7BA; --nav: #070C16; --nav-muted: #9AA7BA;
+  --accent: #F97316; --accent-mark: #FB923C; --accent-soft: #3A1F10; --accent-ink: #FDBA74;
+  --good: #4ADE80; --good-soft: #10301E; --warn: #FCD34D; --warn-soft: #3A2E0E; --bad: #F87171; color-scheme: dark }
+* { box-sizing: border-box; }
+html, body { margin: 0; background: var(--bg); color: var(--ink); font: 16px/1.45 var(--body); -webkit-text-size-adjust: 100%; }
+button { font: inherit; }
+.devbar { background: #FDE68A; color: #3B2A00; font-size: 14px; font-weight: 600; text-align: center; padding: 6px 16px; }
+header.top { background: var(--nav); color: var(--nav-ink); }
+.wrap { max-width: 760px; margin: 0 auto; padding-inline: 16px; }
+header.top .wrap { padding-block: 10px; display: flex; flex-wrap: wrap; gap: 4px 12px; align-items: baseline; }
+.homelink { flex-basis: 100%; color: var(--nav-muted); font-size: 14px; font-weight: 600; text-decoration: none; }
+h1 { font: 800 28px/1.1 var(--display); margin: 0; letter-spacing: .3px; }
+.sub { color: var(--nav-muted); font-size: 14px; }
+main.wrap { padding-block: 16px 110px; display: grid; gap: 14px; }
+.card { background: var(--surface); border: 1px solid var(--line); border-radius: 16px; padding: 16px; display: grid; gap: 12px; }
+.card h2 { font: 700 22px/1.15 var(--display); margin: 0; }
+.muted { color: var(--muted); font-size: 14px; margin: 0; }
+label.f { display: grid; gap: 6px; font-size: 13px; font-weight: 700; color: var(--muted); letter-spacing: .4px; }
+input[type=text] { min-height: 48px; border-radius: 12px; border: 1px solid var(--line); background: var(--surface); color: var(--ink); font: inherit; font-size: 17px; padding: 0 14px; }
+.teams { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+@media (max-width: 520px) { .teams { grid-template-columns: 1fr; } }
+.team { border: 2px solid var(--line); border-radius: 14px; padding: 12px; display: grid; gap: 10px; }
+.sw { display: flex; flex-wrap: wrap; gap: 8px; }
+.sw button { width: 36px; height: 36px; border-radius: 50%; border: 2px solid rgba(0,0,0,.25); cursor: pointer; }
+.sw button[aria-checked=true] { outline: 3px solid var(--ink); outline-offset: 2px; }
+.seg { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.btn { min-height: 48px; border-radius: 12px; border: 1px solid var(--line); background: var(--surface); color: var(--ink); font-weight: 700; font-size: 16px; padding: 0 14px; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 8px; }
+.btn.primary { background: var(--accent-mark); border-color: var(--accent-mark); color: #1F0B00; }
+.btn.dark { background: var(--nav); border-color: var(--nav); color: #fff; }
+.btn.sel { background: var(--nav); border-color: var(--nav); color: #fff; }
+.btn.small { min-height: 40px; font-size: 14px; padding: 0 10px; }
+.btn:disabled { opacity: .45; cursor: default; }
+.row { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+.row > .grow { flex: 1; }
+.hidden { display: none !important; }
+/* stage */
+.stage { position: relative; background: #000; border-radius: 14px; overflow: hidden; }
+.stage video, .stage canvas { position: absolute; inset: 0; width: 100%; height: 100%; }
+.stage canvas { touch-action: manipulation; }
+.hint { position: absolute; left: 8px; right: 8px; bottom: 8px; background: rgba(15,27,45,.86); color: #fff; border-radius: 10px; padding: 8px 12px; font-weight: 600; font-size: 15px; text-align: center; pointer-events: none; }
+.chips { position: absolute; left: 8px; top: 8px; display: flex; gap: 6px; flex-wrap: wrap; pointer-events: none; }
+.chip { background: rgba(15,27,45,.8); color: #fff; font-size: 12px; font-weight: 700; padding: 3px 8px; border-radius: 8px; }
+.chip.on { background: rgba(21,128,61,.9); } .chip.off { background: rgba(185,28,28,.85); }
+/* scoreboard */
+.board { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.side { border-radius: 16px; padding: 10px 12px; display: grid; gap: 2px; }
+.side .nm { font-weight: 800; font-size: 16px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.side .sc { font: 800 56px/1 var(--display); font-variant-numeric: tabular-nums; }
+.side .bk { font-size: 12px; font-weight: 700; opacity: .85; }
+.side .plus { display: flex; gap: 6px; margin-top: 6px; }
+.side .plus button { flex: 1; min-height: 38px; border-radius: 10px; border: 1px solid currentColor; background: transparent; color: inherit; font-weight: 800; cursor: pointer; opacity: .9; }
+.last { border-radius: 14px; border: 2px solid var(--accent-mark); background: var(--accent-soft); padding: 12px; display: grid; gap: 10px; }
+.last .what { font-weight: 800; font-size: 17px; }
+.last .flag { color: var(--warn); background: var(--warn-soft); border-radius: 8px; padding: 6px 10px; font-size: 14px; font-weight: 600; }
+.log { display: grid; gap: 0; }
+.log div { display: flex; gap: 10px; align-items: center; padding: 9px 2px; border-top: 1px solid var(--line); font-size: 15px; }
+.log div:first-child { border-top: 0; }
+.log .dot { width: 10px; height: 10px; border-radius: 50%; flex: none; }
+.log .t { color: var(--muted); font-variant-numeric: tabular-nums; width: 64px; flex: none; font-size: 13px; }
+.log .x { margin-inline-start: auto; color: var(--muted); font-size: 13px; }
+.status { font-size: 13px; color: var(--muted); display: flex; gap: 12px; flex-wrap: wrap; }
+.dotm { display: inline-block; width: 9px; height: 9px; border-radius: 50%; background: #94A3B8; margin-inline-end: 6px; }
+.dotm.ok { background: #16A34A; } .dotm.bad { background: #DC2626; }
+body.playing .devbar, body.playing header.top { display: none; }
+body.playing main.wrap { padding-top: 10px; }
+@media (orientation: landscape) and (max-height: 560px) {
+  body.playing main.wrap { max-width: none; padding-bottom: 80px; }
+  body.playing #game { grid-template-columns: minmax(0, 1fr) 300px; align-items: start; }
+  body.playing #game > * { grid-column: 2; }
+  body.playing #stage { grid-column: 1; grid-row: 1 / span 6; max-height: calc(100vh - 20px); }
+  body.playing .side .sc { font-size: 40px; }
+  body.playing .side .bk { display: none; }
+}
+ol.steps { margin: 0; padding-inline-start: 20px; display: grid; gap: 6px; font-size: 15px; }
+</style>
+</head>
+<body>
+<div class="devbar">Experiment (Score Lab v0.1): counts made baskets from the camera. Expect misses, and fix them with one tap.</div>
+<header class="top"><div class="wrap">
+  <a class="homelink" href="/">← SLTN Labs home</a>
+  <h1>Score Lab</h1><span class="sub">The score counts itself while you film</span>
+</div></header>
+
+<main class="wrap">
+  <!-- 1. set-up -->
+  <section id="setup" class="card">
+    <h2>Set up the game</h2>
+    <div class="teams">
+      <div class="team" id="t0"><label class="f">TEAM 1<input type="text" id="n0" value="Eagles" autocomplete="off"></label><div class="muted">Jersey colour</div><div class="sw" id="sw0" role="radiogroup" aria-label="Team 1 jersey colour"></div></div>
+      <div class="team" id="t1"><label class="f">TEAM 2<input type="text" id="n1" value="Sharks" autocomplete="off"></label><div class="muted">Jersey colour</div><div class="sw" id="sw1" role="radiogroup" aria-label="Team 2 jersey colour"></div></div>
+    </div>
+    <div class="f" style="display:grid;gap:6px"><span style="font-size:13px;font-weight:700;color:var(--muted);letter-spacing:.4px">WHO SHOOTS AT THE LEFT BASKET IN THE FIRST HALF?</span>
+      <div class="seg" id="leftSeg"><button class="btn sel" data-i="0" id="ls0">Eagles</button><button class="btn" data-i="1" id="ls1">Sharks</button></div>
+      <p class="muted">Left and right as you see the court from where you film. Teams swap baskets at half time.</p>
+    </div>
+    <ol class="steps">
+      <li>Film in landscape. Follow the play, but try to keep the rim in the picture when a shot goes up.</li>
+      <li>Tap each rim once at the start. The app keeps track of it as you move.</li>
+      <li>Made baskets count as 2. Tap <b>3</b> or <b>1</b> to fix the last one. Misses can be added with the + buttons.</li>
+    </ol>
+    <div class="row">
+      <button class="btn primary grow" id="useCam">Open the camera</button>
+      <label class="btn grow" for="file" style="cursor:pointer">Use a video instead</label>
+      <input type="file" id="file" accept="video/*" class="hidden">
+    </div>
+    <p class="muted" id="setupMsg">Everything runs in this browser. Nothing is uploaded.</p>
+  </section>
+
+  <!-- 2. stage: camera or video, rim taps, live view -->
+  <section id="game" class="hidden" style="display:grid;gap:12px">
+    <div class="board" id="board"></div>
+    <div class="stage" id="stage" style="aspect-ratio:16/9">
+      <video id="vid" playsinline muted></video>
+      <canvas id="ov" aria-label="Camera view. Tap the rim when asked."></canvas>
+      <div class="hint" id="hint"></div>
+      <div class="chips" id="chips"></div>
+    </div>
+    <div class="row hidden" id="aimCtl">
+      <button class="btn small" id="sizeDn" aria-label="Smaller rim circle">− Size</button>
+      <button class="btn small" id="sizeUp" aria-label="Bigger rim circle">+ Size</button>
+      <button class="btn primary grow" id="aimOk" disabled>Confirm rim</button>
+      <button class="btn small" id="aimSkip">Only one basket</button>
+    </div>
+    <div id="lastBox"></div>
+    <div class="row" id="liveCtl">
+      <button class="btn small" id="period">Q1 ▸</button>
+      <button class="btn small" id="swap">Swap baskets</button>
+      <button class="btn small" id="reaim">Re-tap rims</button>
+      <button class="btn small" id="undo">Undo</button>
+      <button class="btn small dark" id="pause">Pause</button>
+      <button class="btn small" id="end">End</button>
+    </div>
+    <div class="status" id="status"><span><span class="dotm" id="mdot"></span><span id="mtxt">Loading the detector…</span></span><span id="fps"></span></div>
+    <div class="card"><h2>Baskets</h2><div class="log" id="log"><p class="muted">Made baskets appear here.</p></div></div>
+  </section>
+</main>
+
+<script src="../ort/ort.wasm.min.js"></script>
+<script>
+"use strict";
+const $ = (id) => document.getElementById(id);
+const JERSEY = [["White", "#F8FAFC"], ["Black", "#111827"], ["Red", "#DC2626"], ["Maroon", "#7F1D1D"], ["Orange", "#F97316"], ["Yellow", "#FACC15"],
+  ["Green", "#16A34A"], ["Light blue", "#38BDF8"], ["Blue", "#2563EB"], ["Navy", "#1E3A8A"], ["Purple", "#7C3AED"], ["Grey", "#9CA3AF"]];
+const KEY = "sltn.scorelab.v1";
+const S = {
+  teams: [{ name: "Eagles", color: "#2563EB" }, { name: "Sharks", color: "#F8FAFC" }],
+  leftTeam: 0,           // team shooting at the left basket now
+  period: 1, events: [], rims: { L: null, R: null },
+  mode: "setup",         // setup | aim | live | paused | ended
+  source: null,          // 'camera' | 'file'
+  pan: 0,                // camera centre in "frame widths" from where the left rim was tapped
+};
+const hexRgb = (h) => [1, 3, 5].map((i) => parseInt(h.slice(i, i + 2), 16));
+const inkOn = (h) => { const [r, g, b] = hexRgb(h); return (0.299 * r + 0.587 * g + 0.114 * b) > 150 ? "#0F1B2D" : "#FFFFFF"; };
+const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+const teamAt = (rimId) => (rimId === "L" ? S.leftTeam : 1 - S.leftTeam);
+const save = () => { try { localStorage.setItem(KEY, JSON.stringify({ teams: S.teams, leftTeam: S.leftTeam, period: S.period, events: S.events, mode: S.mode === "ended" ? "ended" : "live", at: Date.now() })); } catch (e) {} };
+
+/* ------------------------------------------------------------ set-up screen */
+function swatches(i) {
+  const box = $("sw" + i); box.innerHTML = "";
+  for (const [nm, c] of JERSEY) {
+    const b = document.createElement("button"); b.type = "button"; b.setAttribute("role", "radio"); b.setAttribute("aria-label", nm); b.style.background = c;
+    b.setAttribute("aria-checked", String(S.teams[i].color === c));
+    b.onclick = () => { S.teams[i].color = c; swatches(i); paintTeams(); };
+    box.appendChild(b);
+  }
+}
+function paintTeams() {
+  for (const i of [0, 1]) { $("t" + i).style.borderColor = S.teams[i].color; $("ls" + i).textContent = S.teams[i].name || `Team ${i + 1}`; $("ls" + i).classList.toggle("sel", S.leftTeam === i); }
+}
+for (const i of [0, 1]) { $("n" + i).oninput = (e) => { S.teams[i].name = e.target.value.trim() || `Team ${i + 1}`; paintTeams(); }; swatches(i); }
+$("leftSeg").onclick = (e) => { const b = e.target.closest("button"); if (!b) return; S.leftTeam = +b.dataset.i; paintTeams(); };
+paintTeams();
+
+/* ------------------------------------------------------------ detector (COCO: person 0, sports ball 32) */
+let det = null, detState = "busy";
+async function loadDetector() {
+  try {
+    ort.env.wasm.numThreads = 1; ort.env.wasm.simd = true; ort.env.wasm.wasmPaths = new URL("../ort/", location.href).href;
+    const r = await fetch("../models/det.onnx"); if (!r.ok) throw new Error("model");
+    det = await ort.InferenceSession.create(new Uint8Array(await r.arrayBuffer()), { executionProviders: ["wasm"], graphOptimizationLevel: "all" });
+    detState = "ok"; $("mdot").className = "dotm ok"; $("mtxt").textContent = "Detector ready";
+  } catch (e) { detState = "bad"; $("mdot").className = "dotm bad"; $("mtxt").textContent = "The detector could not load. You can still keep score with the + buttons."; }
+}
+const DIN = 320, pre = document.createElement("canvas"), prx = pre.getContext("2d", { willReadFrequently: true });
+pre.width = DIN; pre.height = DIN;
+function iou(a, b) { const ix = Math.max(0, Math.min(a[2], b[2]) - Math.max(a[0], b[0])), iy = Math.max(0, Math.min(a[3], b[3]) - Math.max(a[1], b[1])), i = ix * iy, u = (a[2] - a[0]) * (a[3] - a[1]) + (b[2] - b[0]) * (b[3] - b[1]) - i; return u > 0 ? i / u : 0; }
+function nms(c, t) { c.sort((a, b) => b[4] - a[4]); const k = []; for (const x of c) if (k.every((y) => iou(x, y) < t)) k.push(x); return k; }
+/** Run the detector on a square crop (full-frame px). Returns balls [cx,cy,r,conf] and persons [x1,y1,x2,y2,conf] in full-frame px. */
+async function detectCrop(src, cx, cy, side) {
+  const x0 = cx - side / 2, y0 = cy - side / 2, k = DIN / side;
+  prx.fillStyle = "rgb(114,114,114)"; prx.fillRect(0, 0, DIN, DIN);
+  prx.drawImage(src, x0, y0, side, side, 0, 0, DIN, DIN);
+  const d = prx.getImageData(0, 0, DIN, DIN).data, n = DIN * DIN, f = new Float32Array(3 * n);
+  for (let i = 0, j = 0; i < n; i++, j += 4) { f[i] = d[j] / 255; f[n + i] = d[j + 1] / 255; f[2 * n + i] = d[j + 2] / 255; }
+  const out = (await det.run({ [det.inputNames[0]]: new ort.Tensor("float32", f, [1, 3, DIN, DIN]) }))[det.outputNames[0]], N = out.dims[2], o = out.data, B = [], P = [];
+  for (let i = 0; i < N; i++) {
+    const sb = o[36 * N + i], sp = o[4 * N + i];
+    if (sb < 0.12 && sp < 0.35) continue;
+    const bx = [(o[i] - o[2 * N + i] / 2) / k + x0, (o[N + i] - o[3 * N + i] / 2) / k + y0, (o[i] + o[2 * N + i] / 2) / k + x0, (o[N + i] + o[3 * N + i] / 2) / k + y0];
+    if (sb >= 0.12) B.push([...bx, sb]); if (sp >= 0.35) P.push([...bx, sp]);
+  }
+  return { balls: nms(B, 0.4).map((b) => [(b[0] + b[2]) / 2, (b[1] + b[3]) / 2, Math.max(b[2] - b[0], b[3] - b[1]) / 2, b[4]]), persons: nms(P, 0.5) };
+}
+
+/* ------------------------------------------------------------ frames, camera motion and rim tracking */
+const SW = 480; // tracking works on a small grey copy of each frame
+const fc = document.createElement("canvas"), fx = fc.getContext("2d", { willReadFrequently: true });
+const sc = document.createElement("canvas"), sx = sc.getContext("2d", { willReadFrequently: true });
+let W = 0, H = 0, SH = 0, gray = null, prevGray = null;
+function grab(v) {
+  if (W !== v.videoWidth || H !== v.videoHeight) { W = v.videoWidth; H = v.videoHeight; fc.width = W; fc.height = H; SH = Math.round(SW * H / W); sc.width = SW; sc.height = SH; prevGray = null; }
+  fx.drawImage(v, 0, 0, W, H); sx.drawImage(fc, 0, 0, SW, SH);
+  const d = sx.getImageData(0, 0, SW, SH).data; prevGray = gray; gray = new Float32Array(SW * SH);
+  for (let i = 0, j = 0; i < gray.length; i++, j += 4) gray[i] = 0.299 * d[j] + 0.587 * d[j + 1] + 0.114 * d[j + 2];
+}
+/** How far the picture moved since the last frame, in small-frame px (content moves left when the camera pans right). */
+function globalShift() {
+  if (!prevGray) return [0, 0];
+  let best = Infinity, bx = 0, by = 0; const m = 24;
+  for (let dy = -10; dy <= 10; dy += 2) for (let dx = -m; dx <= m; dx += 2) {
+    let s = 0, c = 0;
+    for (let y = 20; y < SH - 20; y += 6) { const yy = y + dy; if (yy < 0 || yy >= SH) continue; for (let x = 30; x < SW - 30; x += 6) { const xx = x + dx; s += Math.abs(gray[yy * SW + xx] - prevGray[y * SW + x]); c++; } }
+    s /= c; if (s < best) { best = s; bx = dx; by = dy; }
+  }
+  return [bx, by];
+}
+function makeTemplate(cx, cy, rw) { // small-frame px; covers the rim and the board above it
+  const tw = Math.max(12, Math.round(rw * 2.8)), th = Math.max(12, Math.round(rw * 2.6)), x0 = Math.round(cx - tw / 2), y0 = Math.round(cy - rw * 1.9);
+  const t = new Float32Array(tw * th); let s = 0;
+  for (let y = 0; y < th; y++) for (let x = 0; x < tw; x++) { const v = gray[Math.min(SH - 1, Math.max(0, y0 + y)) * SW + Math.min(SW - 1, Math.max(0, x0 + x))]; t[y * tw + x] = v; s += v; }
+  const mean = s / t.length; let q = 0; for (let i = 0; i < t.length; i++) { t[i] -= mean; q += t[i] * t[i]; }
+  return { t, tw, th, dx: cx - x0, dy: cy - y0, norm: Math.sqrt(q) || 1 };
+}
+function ncc(T, x0, y0, step) { // template top-left at (x0,y0)
+  let s = 0, s2 = 0, st = 0, n = 0;
+  for (let y = 0; y < T.th; y += step) { const row = (y0 + y) * SW + x0; for (let x = 0; x < T.tw; x += step) { const v = gray[row + x]; s += v; s2 += v * v; st += v * T.t[y * T.tw + x]; n++; } }
+  const mean = s / n, varr = s2 / n - mean * mean; if (varr < 4) return -1;
+  let tn = 0; for (let y = 0; y < T.th; y += step) for (let x = 0; x < T.tw; x += step) { const v = T.t[y * T.tw + x]; tn += v * v; }
+  return st / (Math.sqrt(varr * n) * Math.sqrt(tn) || 1);
+}
+function search(T, px, py, rad, step, rs) { // returns best centre (small px) and score; with rs, far-off matches are penalised
+  let best = -2, bx = px, by = py, raw = -2;
+  for (let cy = py - rad; cy <= py + rad; cy += step) for (let cx = px - rad; cx <= px + rad; cx += step) {
+    const x0 = Math.round(cx - T.dx), y0 = Math.round(cy - T.dy);
+    if (x0 < 0 || y0 < 0 || x0 + T.tw >= SW || y0 + T.th >= SH) continue;
+    const v = ncc(T, x0, y0, step > 2 ? 2 : 1), pen = rs ? 0.12 * Math.hypot(cx - px, cy - py) / rs : 0;
+    if (v - pen > best) { best = v - pen; raw = v; bx = cx; by = cy; }
+  }
+  return [bx, by, rs ? raw : best];
+}
+const toSmall = (v) => v * SW / W, toFull = (v) => v * W / SW;
+const worldX = (fullX) => S.pan + (fullX / W - 0.5);
+function newRim(id, x, y, rw) {
+  const T = makeTemplate(toSmall(x), toSmall(y), toSmall(rw));
+  return { id, x, y, rw, T, anchor: worldX(x), found: true, score: 1, lost: 0, cool: 0, last: null, bg: null, bgN: 0, trk: null, pend: null, pendT: null };
+}
+function trackRims(shift) {
+  S.pan -= shift[0] / SW;
+  const rims = [S.rims.L, S.rims.R].filter(Boolean);
+  for (const r of rims) {
+    const rs = toSmall(r.rw);
+    if (r.found) {
+      // the camera's own motion predicts where the rim is; it may only move a little from there
+      const px = toSmall(r.x) + shift[0], py = toSmall(r.y) + shift[1], rad = Math.max(4, Math.round(rs * 0.9));
+      let [bx, by, v] = search(r.T, px, py, rad, 2, rs);
+      if (v > 0.3) [bx, by, v] = search(r.T, bx, by, 2, 1, rs);
+      if (v >= 0.6) { r.x = toFull(bx); r.y = toFull(by); r.score = v; r.lost = 0; }
+      else { r.lost++; r.x = toFull(px); r.y = toFull(py); if (r.lost > 3) r.found = false; }
+    }
+  }
+  // re-find lost rims now and then, anywhere in the frame; the camera position decides which basket it is
+  if (frameNo % 4 === 0) for (const r of rims) {
+    if (r.found) continue;
+    const [bx, by, v] = search(r.T, SW / 2, SH / 2, Math.max(SW, SH) / 2, 4);
+    if (v < 0.55) continue;
+    const [fx2, fy2, v2] = search(r.T, bx, by, 3, 1); if (v2 < 0.62) continue;
+    const other = r.id === "L" ? S.rims.R : S.rims.L, wx = worldX(toFull(fx2));
+    if (other && (other.found && Math.hypot(toFull(fx2) - other.x, toFull(fy2) - other.y) < other.rw * 3)) continue;
+    if (other && Math.abs(wx - r.anchor) > Math.abs(wx - other.anchor)) continue;
+    r.x = toFull(fx2); r.y = toFull(fy2); r.found = true; r.lost = 0; r.score = v2;
+  }
+  // a rim that is tracked fixes where the camera is pointing (stops drift)
+  const seen = rims.filter((r) => r.found && r.score > 0.6);
+  if (seen.length) S.pan = seen.reduce((s, r) => s + r.anchor - (r.x / W - 0.5), 0) / seen.length;
+}
+
+/* ------------------------------------------------------------ ball finder: moving ball-sized shapes near the rim */
+// The area around each rim is sampled on a grid that moves with the rim (4 cells per rim half-width).
+// The grid learns the usual picture (background) and flags what changes; a compact, ball-sized change is the ball.
+const GC = 4, GX0 = -3, GX1 = 3, GY0 = -5, GY1 = 4.5, GCOLS = (GX1 - GX0) * GC, GROWS = (GY1 - GY0) * GC;
+const BALL_AREA = Math.PI * (0.53 * GC) ** 2;
+function zoneGrid(r, bg) {
+  // read the area once (with a margin), then sample the grid at small offsets and keep the one that best matches the learned picture
+  const cell = r.rw / GC, pad = Math.ceil(cell * 1.5), x0 = r.x + GX0 * r.rw, y0 = r.y + GY0 * r.rw, w = (GX1 - GX0) * r.rw, h = (GY1 - GY0) * r.rw;
+  const cx0 = Math.max(0, Math.floor(x0) - pad), cy0 = Math.max(0, Math.floor(y0) - pad), cx1 = Math.min(W, Math.ceil(x0 + w) + pad), cy1 = Math.min(H, Math.ceil(y0 + h) + pad);
+  const empty = new Float32Array(GCOLS * GROWS).fill(NaN);
+  if (cx1 - cx0 < 4 || cy1 - cy0 < 4) return empty;
+  const d = fx.getImageData(cx0, cy0, cx1 - cx0, cy1 - cy0).data, iw = cx1 - cx0, ih = cy1 - cy0;
+  const sample = (ox, oy) => {
+    const G = new Float32Array(GCOLS * GROWS).fill(NaN);
+    for (let gy = 0; gy < GROWS; gy++) for (let gx = 0; gx < GCOLS; gx++) {
+      const px = Math.floor(x0 + (gx + 0.5 + ox) * cell) - cx0, py = Math.floor(y0 + (gy + 0.5 + oy) * cell) - cy0;
+      if (px < 0 || py < 0 || px >= iw || py >= ih) continue;
+      const j = (py * iw + px) * 4; G[gy * GCOLS + gx] = 0.299 * d[j] + 0.587 * d[j + 1] + 0.114 * d[j + 2];
+    }
+    return G;
+  };
+  if (!bg) return sample(0, 0);
+  let best = null, bs = Infinity;
+  for (const oy of [-1, -0.5, 0, 0.5, 1]) for (const ox of [-1, -0.5, 0, 0.5, 1]) {
+    const G = sample(ox, oy), e = [];
+    for (let i = 0; i < G.length; i += 3) if (!Number.isNaN(G[i]) && !Number.isNaN(bg[i])) e.push(Math.abs(G[i] - bg[i]));
+    e.sort((p, q) => p - q); const m = e.length ? e[Math.floor(e.length * 0.6)] : Infinity;
+    if (m < bs) { bs = m; best = G; }
+  }
+  return best;
+}
+function findBall(r) {
+  const G = zoneGrid(r); // (aligning the grid to the learned picture was tried; the wobble tolerance below worked better)
+  if (!r.bg) { r.bg = G.slice(); r.bgN = 1; return null; }
+  const n = G.length, diff = new Float32Array(n), fg = new Uint8Array(n), devs = [];
+  // allow a one-cell wobble of the rim lock, so edges of the board and fence don't light up
+  for (let i = 0; i < n; i++) {
+    if (Number.isNaN(G[i]) || Number.isNaN(r.bg[i])) { diff[i] = 0; continue; }
+    const x = i % GCOLS, y = (i / GCOLS) | 0; let lo = Infinity, hi = -Infinity, m = Math.abs(G[i] - r.bg[i]);
+    for (let yy = Math.max(0, y - 1); yy <= Math.min(GROWS - 1, y + 1); yy++) for (let xx = Math.max(0, x - 1); xx <= Math.min(GCOLS - 1, x + 1); xx++) { const b = r.bg[yy * GCOLS + xx]; if (Number.isNaN(b)) continue; lo = Math.min(lo, b); hi = Math.max(hi, b); }
+    { for (let yy = Math.max(0, y - 1); yy <= Math.min(GROWS - 1, y + 1); yy++) for (let xx = Math.max(0, x - 1); xx <= Math.min(GCOLS - 1, x + 1); xx++) { const b = r.bg[yy * GCOLS + xx]; if (!Number.isNaN(b)) m = Math.min(m, Math.abs(G[i] - b)); } }
+    diff[i] = m; devs.push(m);
+  }
+  devs.sort((a, b) => a - b); const noise = devs.length ? devs[Math.floor(devs.length / 2)] : 0, T = Math.max(16, noise * 3.5);
+  for (let i = 0; i < n; i++) fg[i] = diff[i] > T ? 1 : 0;
+  // background learns slowly; it ignores what is moving right now so the ball doesn't get absorbed
+  for (let i = 0; i < n; i++) { if (Number.isNaN(G[i])) continue; if (Number.isNaN(r.bg[i])) { r.bg[i] = G[i]; continue; } r.bg[i] += (fg[i] ? 0.07 : 0.25) * (G[i] - r.bg[i]); }
+  r.bgN++; if (r.bgN < 4) return null;
+  // connected shapes
+  const lab = new Int32Array(n).fill(-1), comps = [], st = [];
+  for (let i = 0; i < n; i++) {
+    if (!fg[i] || lab[i] >= 0) continue;
+    let a = 0, sx2 = 0, sy2 = 0, mnx = 1e9, mxx = -1, mny = 1e9, mxy = -1; st.push(i); lab[i] = comps.length;
+    while (st.length) { const k = st.pop(), x = k % GCOLS, y = (k / GCOLS) | 0; a++; sx2 += x; sy2 += y; mnx = Math.min(mnx, x); mxx = Math.max(mxx, x); mny = Math.min(mny, y); mxy = Math.max(mxy, y);
+      for (const q of [k - 1, k + 1, k - GCOLS, k + GCOLS]) { if (q < 0 || q >= n || lab[q] >= 0 || !fg[q]) continue; if ((q === k - 1 && x === 0) || (q === k + 1 && x === GCOLS - 1)) continue; lab[q] = comps.length; st.push(q); } }
+    comps.push({ a, cx: sx2 / a, cy: sy2 / a, w: mxx - mnx + 1, h: mxy - mny + 1 });
+  }
+  // a ball is always moving: drop shapes that sit where a shape was in the last frame
+  const prev = r.prevComps || []; r.prevComps = comps.map((c) => [c.cx, c.cy]);
+  const cand = [];
+  for (const c of comps) {
+    if (prev.some(([px, py]) => Math.hypot(px - c.cx, py - c.cy) < 0.6)) continue;
+    const ratio = c.a / BALL_AREA, asp = c.w / c.h, fill = c.a / (c.w * c.h);
+    const dxr = (c.cx + 0.5) / GC + GX0, dyr = (c.cy + 0.5) / GC + GY0;
+    const inNet = Math.abs(dxr) < 1.1 && dyr > 0.2 && dyr < 4.2; // the net breaks the ball's outline, so allow ragged shapes there
+    if (inNet ? (ratio < 0.2 || ratio > 3 || asp < 0.3 || asp > 3 || fill < 0.25) : (ratio < 0.3 || ratio > 2.6 || asp < 0.4 || asp > 2.5 || fill < 0.4)) continue;
+    cand.push({ dxr, dyr, a: c.a, score: 1 / (1 + Math.abs(Math.log(ratio))) * fill });
+  }
+  cand.sort((a, b) => b.score - a.score);
+  return cand.slice(0, 3).map((c) => [r.x + c.dxr * r.rw, r.y + c.dyr * r.rw, Math.max(0.3 * r.rw, Math.sqrt(c.a / Math.PI) / GC * r.rw), Math.min(0.99, c.score)]);
+}
+
+/* ------------------------------------------------------------ made-basket logic */
+// Positions are measured from the rim centre in rim half-widths (rw). Ball radius is about 0.5 rw.
+// The ball is followed from frame to frame: a path starts above the rim and each next point must be near where the path predicts
+// (or near its last point: the ball slows down in the net). Positions are in rim half-widths (rw) from the rim centre.
+// A make = above the rim, then at least twice inside the rim line going down, never beside the rim at rim height,
+// and the ball does not reappear above the rim in the next 0.4 s (that would be a bounce off the rim).
+const CONFIRM = 0.4;
+async function trackBall(r, t, balls) {
+  const C = balls.map((b) => ({ dx: (b[0] - r.x) / r.rw, dy: (b[1] - r.y) / r.rw, rr: b[2] / r.rw, x: b[0], y: b[1], rad: b[2] })).filter((c) => c.rr >= 0.22 && c.rr <= 1.3);
+  if (window.__obs) window.__obs.push([+t.toFixed(2), C.map((c) => [+c.dx.toFixed(2), +c.dy.toFixed(2), +c.rr.toFixed(2)])]);
+  if (r.pend !== null && r.pend !== undefined) {
+    if (C.some((c) => c.dy < -0.8 && c.dy > -4 && Math.abs(c.dx) < 2.2 && c.rr >= 0.4)) r.pend = null;
+    else if (t - r.pend >= CONFIRM) { r.pend = null; r.cool = t + 1.8; r.trk = null; await made(r); return; }
+  }
+  let k = r.trk;
+  if (k && t - k.t > 0.45) k = r.trk = null;
+  let pick = null;
+  if (k) {
+    const dt = t - k.t, px = k.dx + k.vx * dt, py = k.dy + k.vy * dt, gate = k.pts.length < 2 ? Math.min(4.5, 2 + 12 * dt) : 1.4 + 0.5 * Math.hypot(k.vx, k.vy) * dt;
+    let bd = Infinity;
+    for (const c of C) {
+      const d = Math.min(Math.hypot(c.dx - px, c.dy - py), Math.hypot(c.dx - k.dx, c.dy - k.dy) + 0.3); if (d > gate) continue;
+      const cost = d + (c.rr < 0.4 && k.rr > 0.45 ? 0.8 : 0); if (cost < bd) { bd = cost; pick = c; }
+    }
+    if (pick) { const vx = (pick.dx - k.dx) / dt, vy = (pick.dy - k.dy) / dt; k.vx = k.pts.length > 1 ? 0.5 * k.vx + 0.5 * vx : vx; k.vy = k.pts.length > 1 ? 0.5 * k.vy + 0.5 * vy : vy; k.dx = pick.dx; k.dy = pick.dy; k.t = t; k.rr = 0.7 * k.rr + 0.3 * pick.rr; k.pts.push({ t, dx: pick.dx, dy: pick.dy }); }
+  }
+  if (!pick) {
+    const st = C.filter((c) => c.dy < -0.3 && c.dy > -4.8 && Math.abs(c.dx) < 2.8 && c.rr >= 0.35).sort((a, b) => b.rr - a.rr)[0];
+    if (st) { pick = st; k = r.trk = { dx: st.dx, dy: st.dy, vx: 0, vy: 0, t, rr: st.rr, pts: [{ t, dx: st.dx, dy: st.dy }] }; }
+  }
+  if (!pick) return;
+  r.last = { x: pick.x, y: pick.y, r: pick.rad, t };
+  if (t < r.cool || (r.pend !== null && r.pend !== undefined)) return;
+  const P = k.pts, now = P[P.length - 1];
+  if (!(now.dy > 0.25 && now.dy < 4.2 && Math.abs(now.dx) < 1.1)) return;
+  let ai = -1;
+  for (let i = P.length - 2; i >= 0; i--) { if (now.t - P[i].t > 1.6) break; if (P[i].dy <= -0.3 && Math.abs(P[i].dx) < 2.6) { ai = i; break; } }
+  if (ai < 0) return;
+  const after = P.slice(ai + 1);
+  if (after.some((o) => o.dy > -0.6 && o.dy < 0.9 && Math.abs(o.dx) > 1.15)) return;
+  const inside = after.filter((o) => o.dy > 0.25 && o.dy < 4.2 && Math.abs(o.dx) < 1.1);
+  if (inside.length < 2 || inside[inside.length - 1].dy < inside[0].dy) return;
+  r.pend = t; r.pendT = t;
+}
+/** Jersey check: colour of the player nearest under the rim when the ball went in. */
+let lastPersons = [];
+function jerseyTeam(r) {
+  let best = null, bd = Infinity;
+  for (const p of lastPersons) { const cx = (p[0] + p[2]) / 2, d = Math.hypot(cx - r.x, Math.max(0, r.y - p[1])); if (d < bd && d < r.rw * 8) { bd = d; best = p; } }
+  if (!best) return null;
+  const w = best[2] - best[0], h = best[3] - best[1], x0 = Math.max(0, Math.round(best[0] + w * 0.3)), y0 = Math.max(0, Math.round(best[1] + h * 0.2)), ww = Math.max(2, Math.round(w * 0.4)), hh = Math.max(2, Math.round(h * 0.3));
+  if (x0 + ww > W || y0 + hh > H) return null;
+  const d = fx.getImageData(x0, y0, ww, hh).data; let R = 0, G = 0, B = 0, n = 0;
+  for (let i = 0; i < d.length; i += 16) { R += d[i]; G += d[i + 1]; B += d[i + 2]; n++; }
+  const c = [R / n, G / n, B / n], dist = S.teams.map((t) => { const q = hexRgb(t.color); return Math.hypot(c[0] - q[0], c[1] - q[1], c[2] - q[2]); });
+  if (Math.min(...dist) > 150) return null;
+  return dist[0] < dist[1] * 0.7 ? 0 : dist[1] < dist[0] * 0.7 ? 1 : null;
+}
+async function made(r) {
+  lastPersons = [];
+  if (detState === "ok") try { lastPersons = (await detectCrop(fc, r.x, r.y + r.rw * 2, Math.min(Math.max(r.rw * 16, 200), Math.max(W, H)))).persons; } catch (e) {}
+  const team = teamAt(r.id), j = jerseyTeam(r);
+  const e = { id: Math.random().toString(36).slice(2, 9), at: r.pendT ?? clock(), team, pts: 2, rim: r.id, q: S.period, auto: true, jersey: j !== null && j !== team ? j : null };
+  S.events.push(e); save(); render(); flash(team);
+  if (navigator.vibrate) try { navigator.vibrate(60); } catch (x) {}
+}
+
+/* ------------------------------------------------------------ main loop */
+const vid = $("vid"), ov = $("ov"), ox = ov.getContext("2d");
+let running = false, frameNo = 0, fileStep = 0.1, lastFps = [], startWall = 0;
+const clock = () => (S.source === "file" ? vid.currentTime : (performance.now() - startWall) / 1000);
+async function processFrame() {
+  grab(vid); frameNo++;
+  const shift = globalShift();
+  if (S.mode === "aim") { S.pan -= shift[0] / SW; aimTrack(shift); draw(); return; }
+  trackRims(shift);
+  for (const r of [S.rims.L, S.rims.R]) {
+    if (!r) continue;
+    if (!r.found) { r.bg = null; continue; } // relearn the picture when the rim comes back
+    if (window.__rim) window.__rim.push([+clock().toFixed(2), Math.round(r.x), Math.round(r.y), +r.score.toFixed(2)]);
+    await trackBall(r, clock(), findBall(r) || []);
+  }
+  draw();
+}
+async function loop() {
+  if (!running) return;
+  const t0 = performance.now();
+  try {
+    if (S.source === "file") {
+      if (vid.currentTime + fileStep >= vid.duration - 0.05) { await processFrame(); await endGame(); return; }
+      await seek(vid.currentTime + fileStep); await processFrame();
+    } else if (vid.readyState >= 2) await processFrame();
+  } catch (e) { console.error(e); }
+  lastFps.push(performance.now() - t0); if (lastFps.length > 20) lastFps.shift();
+  $("fps").textContent = `${(1000 / (lastFps.reduce((a, b) => a + b, 0) / lastFps.length)).toFixed(1)} checks a second`;
+  if (S.source === "camera") requestAnimationFrame(loop); else setTimeout(loop, 0);
+}
+const seek = (t) => new Promise((res) => { const h = () => { vid.removeEventListener("seeked", h); res(); }; vid.addEventListener("seeked", h); vid.currentTime = t; });
+function start() { if (running) return; running = true; loop(); }
+function stop() { running = false; }
+
+/* ------------------------------------------------------------ aiming: tap each rim */
+let aim = null; // { id, x, y, rw }
+function aimStep(id) {
+  S.mode = "aim"; aim = { id, x: 0, y: 0, rw: 0 };
+  const team = S.teams[teamAt(id)].name;
+  $("hint").textContent = id === "L" ? `Point at the LEFT basket (${team} shoot there) and tap the rim` : `Now pan to the RIGHT basket (${team}) and tap its rim`;
+  $("hint").classList.remove("hidden"); $("aimCtl").classList.remove("hidden"); $("liveCtl").classList.add("hidden");
+  $("aimOk").disabled = true; $("aimSkip").classList.toggle("hidden", id === "L");
+}
+function aimTrack(shift) { if (aim && aim.rw) { aim.x += toFull(shift[0]); aim.y += toFull(shift[1]); } }
+ov.addEventListener("click", (e) => {
+  if (S.mode !== "aim" || !W) return;
+  const rect = ov.getBoundingClientRect(), x = (e.clientX - rect.left) / rect.width * W, y = (e.clientY - rect.top) / rect.height * H;
+  aim.x = x; aim.y = y; aim.rw = aim.rw || W * 0.025; $("aimOk").disabled = false; draw();
+});
+$("sizeUp").onclick = () => { if (aim && aim.rw) { aim.rw *= 1.15; draw(); } };
+$("sizeDn").onclick = () => { if (aim && aim.rw) { aim.rw /= 1.15; draw(); } };
+$("aimOk").onclick = () => {
+  if (!aim || !aim.rw) return;
+  if (aim.id === "L") S.pan = 0;
+  S.rims[aim.id] = newRim(aim.id, aim.x, aim.y, aim.rw);
+  if (aim.id === "L") aimStep("R"); else goLive();
+};
+$("aimSkip").onclick = () => { S.rims.R = null; goLive(); };
+function goLive() {
+  S.mode = "live"; aim = null; $("hint").classList.add("hidden"); $("aimCtl").classList.add("hidden"); $("liveCtl").classList.remove("hidden");
+  $("pause").textContent = "Pause"; if (S.source === "file") start(); render(); draw();
+}
+$("reaim").onclick = () => { S.rims = { L: null, R: null }; if (S.source === "file") stop(); aimStep("L"); draw(); };
+
+/* ------------------------------------------------------------ drawing */
+function fitStage() {
+  if (!W) return; $("stage").style.aspectRatio = `${W} / ${H}`;
+  const r = ov.getBoundingClientRect(), dpr = Math.min(2, window.devicePixelRatio || 1);
+  ov.width = Math.round(r.width * dpr); ov.height = Math.round(r.height * dpr);
+}
+function draw() {
+  if (!W) return; if (ov.width < 2) fitStage();
+  const k = ov.width / W; ox.clearRect(0, 0, ov.width, ov.height);
+  if (S.source === "file") ox.drawImage(fc, 0, 0, ov.width, ov.height);
+  const ring = (x, y, rw, col, label) => {
+    ox.lineWidth = Math.max(2, 3 * k * W / 960); ox.strokeStyle = col; ox.beginPath(); ox.ellipse(x * k, y * k, rw * k, rw * k * 0.38, 0, 0, Math.PI * 2); ox.stroke();
+    if (label) { ox.font = `700 ${Math.round(13 * Math.max(1, k * W / 700))}px Barlow, sans-serif`; ox.fillStyle = col; ox.fillText(label, x * k - rw * k, y * k - rw * k * 0.6); }
+  };
+  if (S.mode === "aim" && aim && aim.rw) ring(aim.x, aim.y, aim.rw, "#F97316", "rim");
+  for (const r of [S.rims.L, S.rims.R]) {
+    if (!r) continue;
+    if (r.found) ring(r.x, r.y, r.rw, S.teams[teamAt(r.id)].color === "#F8FAFC" ? "#FFFFFF" : S.teams[teamAt(r.id)].color, `${r.id === "L" ? "Left" : "Right"} · ${S.teams[teamAt(r.id)].name}`);
+    if (r.last && clock() - r.last.t < 0.6) { ox.strokeStyle = "#FDE047"; ox.lineWidth = 3; ox.beginPath(); ox.arc(r.last.x * k, r.last.y * k, r.last.r * k, 0, Math.PI * 2); ox.stroke(); }
+  }
+  const chips = [S.rims.L, S.rims.R].filter(Boolean).map((r) => `<span class="chip ${r.found ? "on" : "off"}">${r.id === "L" ? "Left" : "Right"} rim ${r.found ? "tracked" : "not in view"}</span>`);
+  $("chips").innerHTML = S.mode === "live" ? chips.join("") : "";
+}
+let flashT = null;
+function flash(team) { const el = $("side" + team); if (!el) return; el.style.outline = "4px solid #FDE047"; clearTimeout(flashT); flashT = setTimeout(() => { el.style.outline = ""; }, 900); }
+
+/* ------------------------------------------------------------ scoreboard, last basket, log */
+const total = (i) => S.events.filter((e) => e.team === i).reduce((s, e) => s + e.pts, 0);
+const mmss = (s) => `${Math.floor(s / 60)}:${String(Math.floor(s % 60)).padStart(2, "0")}`;
+function render() {
+  $("board").innerHTML = [0, 1].map((i) => {
+    const t = S.teams[i], ink = inkOn(t.color), rim = S.leftTeam === i ? "left" : "right";
+    return `<div class="side" id="side${i}" style="background:${t.color};color:${ink};${t.color === "#F8FAFC" ? "border:1px solid var(--line)" : ""}">
+      <div class="nm">${esc(t.name)}</div><div class="sc" aria-label="${esc(t.name)} ${total(i)} points">${total(i)}</div><div class="bk">Shoots at the ${rim} basket</div>
+      <div class="plus">${[1, 2, 3].map((p) => `<button data-t="${i}" data-p="${p}" aria-label="Add ${p} for ${esc(t.name)}">+${p}</button>`).join("")}</div></div>`;
+  }).join("");
+  const last = S.events[S.events.length - 1];
+  $("lastBox").innerHTML = last ? `<div class="last" role="status">
+      <div class="what">${last.auto ? "Counted" : "Added"}: +${last.pts} ${esc(S.teams[last.team].name)} <span class="muted">· ${mmss(last.at)} · Q${last.q}</span></div>
+      ${last.jersey !== null && last.jersey !== undefined ? `<div class="flag">Check: the shirt under the rim looked like ${esc(S.teams[last.jersey].name)}.</div>` : ""}
+      <div class="row"><button class="btn small" data-fix="3">Make it 3</button><button class="btn small" data-fix="1">Free throw (1)</button><button class="btn small" data-fix="2">2</button>
+      <button class="btn small" data-fix="team">It was ${esc(S.teams[1 - last.team].name)}</button><button class="btn small" data-fix="del">Not a basket</button></div></div>` : "";
+  const ev = [...S.events].reverse();
+  $("log").innerHTML = ev.length ? ev.map((e) => `<div><span class="t">Q${e.q} ${mmss(e.at)}</span><span class="dot" style="background:${S.teams[e.team].color};border:1px solid var(--line)"></span><b>+${e.pts}</b> ${esc(S.teams[e.team].name)}<span class="x">${e.auto ? "camera" : "added"}${e.jersey !== null && e.jersey !== undefined ? " · check" : ""}</span></div>`).join("")
+    : `<p class="muted">Made baskets appear here.</p>`;
+  $("period").textContent = `Q${S.period} ▸`;
+}
+$("board").onclick = (e) => { const b = e.target.closest("button[data-p]"); if (!b) return; S.events.push({ id: Math.random().toString(36).slice(2, 9), at: clock(), team: +b.dataset.t, pts: +b.dataset.p, q: S.period, auto: false, jersey: null }); save(); render(); };
+$("lastBox").onclick = (e) => {
+  const b = e.target.closest("button[data-fix]"); if (!b) return; const last = S.events[S.events.length - 1]; if (!last) return;
+  const f = b.dataset.fix; if (f === "del") S.events.pop(); else if (f === "team") { last.team = 1 - last.team; last.jersey = null; } else last.pts = +f;
+  save(); render();
+};
+$("undo").onclick = () => { S.events.pop(); save(); render(); };
+$("swap").onclick = () => { S.leftTeam = 1 - S.leftTeam; save(); render(); draw(); };
+$("period").onclick = () => { S.period += 1; if (S.period === 3) { S.leftTeam = 1 - S.leftTeam; $("mtxt").textContent = "Half time: teams swapped baskets."; } save(); render(); draw(); };
+$("pause").onclick = () => {
+  if (S.mode === "live") { S.mode = "paused"; stop(); $("pause").textContent = "Resume"; if (S.source === "file") vid.pause(); }
+  else if (S.mode === "paused") { S.mode = "live"; $("pause").textContent = "Pause"; start(); }
+};
+$("end").onclick = () => endGame();
+async function endGame() {
+  stop();
+  for (const r of [S.rims.L, S.rims.R]) if (r && r.pend !== null && r.pend !== undefined) { r.pend = null; await made(r); } // a make still being confirmed counts
+  S.mode = "ended"; save();
+  $("hint").textContent = `Final: ${S.teams[0].name} ${total(0)} – ${total(1)} ${S.teams[1].name}`; $("hint").classList.remove("hidden");
+  if (S.source === "camera" && vid.srcObject) { vid.srcObject.getTracks().forEach((t) => t.stop()); }
+  $("pause").disabled = true; render();
+  window.__done = true;
+}
+
+/* ------------------------------------------------------------ sources */
+let wake = null;
+async function openGame(source) {
+  S.source = source; S.events = []; S.period = 1; S.rims = { L: null, R: null }; frameNo = 0; startWall = performance.now();
+  $("setup").classList.add("hidden"); $("game").classList.remove("hidden"); document.body.classList.add("playing"); render();
+  if (!det && detState !== "bad") loadDetector();
+  try { if (navigator.wakeLock) wake = await navigator.wakeLock.request("screen"); } catch (e) {}
+}
+$("useCam").onclick = async () => {
+  try {
+    const st = await navigator.mediaDevices.getUserMedia({ video: { facingMode: { ideal: "environment" }, width: { ideal: 1280 }, height: { ideal: 720 } }, audio: false });
+    await openGame("camera"); vid.srcObject = st; await vid.play();
+    await new Promise((r) => (vid.videoWidth ? r() : vid.addEventListener("loadedmetadata", r, { once: true })));
+    grab(vid); fitStage(); aimStep("L"); start();
+  } catch (e) { $("setupMsg").textContent = "The camera could not open. Allow camera access for this site, or use a video instead."; $("setup").classList.remove("hidden"); $("game").classList.add("hidden"); }
+};
+$("file").onchange = async (e) => { const f = e.target.files[0]; if (f) await openFile(URL.createObjectURL(f)); };
+async function openFile(url) {
+  await openGame("file"); vid.src = url;
+  await new Promise((r) => vid.addEventListener("loadeddata", r, { once: true }));
+  await seek(0.05); grab(vid); fitStage(); aimStep("L"); draw();
+}
+window.addEventListener("resize", () => { fitStage(); draw(); });
+
+/* ------------------------------------------------------------ test hook (used by the automated accuracy check) */
+window.SL = { S, openFile, loadDetector, setRims(list) { for (const [id, x, y, rw] of list) S.rims[id] = newRim(id, x, y, rw); }, goLive, total, ready: () => detState };
+</script>
+<script src="/feedback.js" data-app="rookie-track-video" data-version="score-0.1" defer></script>
+</body>
+</html>
