@@ -3,11 +3,11 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>SLTN Labs · Rookie Track</title>
-<meta name="description" content="Rookie Track turns your kid's basketball game into stats you'll actually understand. Tap live from the stands, get the full story at the buzzer. Free, private, no account.">
-<meta property="og:title" content="Rookie Track by SLTN Labs">
-<meta property="og:description" content="Every bucket counts. Live basketball stats for parents: tap from the stands, get the story at the buzzer.">
-<meta property="og:image" content="https://sltnlabs.com/rookie-track/icon.png">
+<title>SLTN Labs · small apps, clear answers</title>
+<meta name="description" content="SLTN Labs is an independent app studio building small, focused, private apps that turn everyday moments into clear answers. Home of Rookie Star.">
+<meta property="og:title" content="SLTN Labs">
+<meta property="og:description" content="Small apps for big moments. Focused, private, built to last. Home of Rookie Star.">
+<meta property="og:url" content="https://sltnlabs.com/">
 <meta name="theme-color" content="#0F1B2D">
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -52,6 +52,11 @@ h1, h2, h3 { font-family: var(--display); letter-spacing: -.03em; line-height: 1
 :root[data-theme="dark"] .mark svg rect { fill: #FFFFFF; } :root[data-theme="dark"] .mark svg path { stroke: #0F1B2D; }
 @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .mark svg rect { fill: #FFFFFF; } :root:not([data-theme="light"]) .mark svg path { stroke: #0F1B2D; } }
 /* nav */
+.prod { display: flex; align-items: baseline; gap: 10px; }
+.prod .mark { align-self: center; }
+.by { font-size: 13px; font-weight: 600; color: var(--muted); text-decoration: none; white-space: nowrap; }
+.by:hover { color: var(--orange-ink); }
+@media (max-width: 420px) { .by { display: none; } }
 nav { position: sticky; top: 0; z-index: 20; background: color-mix(in srgb, var(--bg) 86%, transparent); backdrop-filter: saturate(1.6) blur(14px); -webkit-backdrop-filter: saturate(1.6) blur(14px); }
 nav .wrap { display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 68px; }
 .mark { display: flex; align-items: center; gap: 10px; text-decoration: none; font-family: var(--display); font-weight: 700; font-size: 20px; letter-spacing: -.01em; }
@@ -205,6 +210,61 @@ footer { border-top: 1px solid var(--line); padding-block: 48px calc(40px + env(
   .reveal { opacity: 1; transform: none; transition: none; }
   .btn, .lab a { transition: none; }
 }
+
+/* company page */
+.hero h1 { font-size: clamp(48px, 8.4vw, 100px); }
+.shelf { position: relative; display: grid; grid-template-columns: 1fr 1fr; gap: 18px; max-width: 480px; margin-inline: auto; width: 100%; }
+.tile { aspect-ratio: 1; border-radius: 32px; display: flex; flex-direction: column; justify-content: space-between; padding: 22px; text-decoration: none; position: relative; overflow: hidden; }
+.tile .k { font: 700 12px/1 var(--body); letter-spacing: .12em; text-transform: uppercase; }
+.tile h3 { font-size: clamp(22px, 2.4vw, 28px); }
+.t-brand { background: #0F1B2D; color: #fff; padding: 0; border: 1px solid rgba(255,255,255,.1); justify-content: center; align-items: center; box-shadow: 0 30px 60px -24px rgba(15,27,45,.5); }
+.t-brand .logo { width: 62%; aspect-ratio: 1; }
+.t-brand .logo svg rect { fill: #0F1B2D !important; } .t-brand .logo svg path { stroke: #fff !important; }
+.t-app { background: var(--orange); color: #1A0D04; box-shadow: 0 30px 60px -24px rgba(249,115,22,.55); transition: transform .2s ease; }
+.t-app:hover { transform: translateY(-4px) rotate(-1deg); }
+.t-app img { width: 64px; height: 64px; border-radius: 16px; box-shadow: 0 8px 18px -6px rgba(26,13,4,.4); }
+.t-app .k { color: #3A1A06; display: flex; align-items: center; gap: 8px; }
+.t-app .k i { width: 8px; height: 8px; border-radius: 50%; background: #0F1B2D; animation: pulse 1.6s ease-in-out infinite; }
+@keyframes pulse { 50% { opacity: .25; } }
+.t-next { border: 2px dashed var(--line); color: var(--muted); }
+.t-next .plus { font: 500 56px/1 var(--display); color: var(--line); }
+.shelf .t-brand { transform: rotate(-3deg); }
+.shelf .t-next:last-child { transform: rotate(2deg); }
+
+.feature { display: grid; grid-template-columns: 1.1fr .9fr; background: var(--orange); color: #1A0D04; border-radius: clamp(28px, 4vw, 48px); overflow: hidden; }
+.feature .txt { padding: clamp(32px, 6vw, 72px) clamp(22px, 5vw, 64px); display: flex; flex-direction: column; gap: 18px; }
+.feature h2 { font-size: clamp(44px, 7vw, 84px); }
+.feature p { margin: 0; font-size: clamp(18px, 2vw, 20px); color: #3A1A06; max-width: 40ch; }
+.feature .badge { align-self: flex-start; display: inline-flex; align-items: center; gap: 8px; background: #0F1B2D; color: #fff; font-weight: 700; font-size: 14px; padding: 7px 14px; border-radius: 99px; }
+.feature .badge img { width: 22px; height: 22px; border-radius: 6px; }
+.feature .ctas { margin-top: 10px; }
+.feature .btn-navy { background: #0F1B2D; color: #fff; box-shadow: 0 6px 0 #000; }
+.feature .btn-navy:hover { transform: translateY(-2px); }
+.feature .btn-ghost { color: #1A0D04; }
+.feature .phones { position: relative; min-height: 420px; }
+.feature .phone { width: clamp(200px, 19vw, 250px); }
+.feature .phone.f1 { left: 6%; top: 12%; transform: rotate(-7deg); z-index: 2; }
+.feature .phone.f2 { right: 4%; top: 22%; transform: rotate(6deg); }
+@media (max-width: 900px) { .feature { grid-template-columns: 1fr; } .feature .phones { min-height: 400px; margin-bottom: -60px; } .feature .phone { width: 190px; } .feature .phone.f1 { left: 8%; } .feature .phone.f2 { right: 8%; } }
+@media (max-width: 420px) { .feature .phone { width: 160px; border-radius: 34px; padding: 7px; } }
+
+.pr { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
+.pr div { background: var(--paper); border: 1px solid var(--line); border-radius: var(--r); padding: clamp(24px, 3vw, 34px); }
+.pr .n { font: 700 clamp(56px, 6vw, 76px)/1 var(--display); letter-spacing: -.05em; color: var(--orange); display: block; margin-bottom: 18px; }
+.pr h3 { font-size: clamp(26px, 2.8vw, 32px); margin-bottom: 10px; }
+.pr p { margin: 0; color: var(--ink2); }
+@media (max-width: 900px) { .pr { grid-template-columns: 1fr; } }
+
+.hello { background: #0F1B2D; color: #fff; border-radius: clamp(28px, 4vw, 48px); padding: clamp(40px, 7vw, 88px) clamp(22px, 5vw, 64px); display: grid; grid-template-columns: 1.3fr 1fr; gap: 28px; align-items: end; }
+:root[data-theme="dark"] .hello { background: #131D2D; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .hello { background: #131D2D; } }
+.hello h2 { font-size: clamp(40px, 6.4vw, 76px); }
+.hello h2 span { color: var(--orange); }
+.hello p { margin: 16px 0 0; color: #C3CCD8; font-size: clamp(17px, 2vw, 19px); max-width: 44ch; }
+.hello .ctas { justify-content: flex-end; }
+.hello .btn-ghost { color: #fff; }
+@media (max-width: 900px) { .hello { grid-template-columns: 1fr; } .hello .ctas { justify-content: flex-start; } }
+@media (prefers-reduced-motion: reduce) { .t-app .k i { animation: none; } .t-app { transition: none; } }
 </style>
 </head>
 <body class="no-js">
@@ -213,140 +273,79 @@ footer { border-top: 1px solid var(--line); padding-block: 48px calc(40px + env(
   <div class="wrap">
     <a class="mark" href="./" aria-label="SLTN Labs home"><svg width="36" height="36" viewBox="0 0 64 64" aria-hidden="true"><rect width="64" height="64" rx="16" fill="#0F1B2D"/><path d="M27.5 22.6 C 25.7 21.1, 23.6 20.2, 21.1 20.2 C 17.6 20.2, 15.2 22.1, 15.2 24.9 C 15.2 31.2, 28.6 28.5, 28.6 35.1 C 28.6 38.1, 26 40, 22.1 40 C 19.1 40, 16.4 39, 14.4 37.2" fill="none" stroke="#FFFFFF" stroke-width="4.6" stroke-linecap="round" stroke-linejoin="round"/><path d="M34.5 20.4 V39.6 H45" fill="none" stroke="#FFFFFF" stroke-width="4.6" stroke-linecap="round" stroke-linejoin="round"/><circle cx="51" cy="37.5" r="3.6" fill="#F97316"/></svg>SLTN <small>Labs</small></a>
     <div class="navlinks">
-      <a href="#features">Features</a>
-      <a href="#privacy">Privacy</a>
+      <a href="#apps">Apps</a>
+      <a href="#how">How we build</a>
       <a href="#lab">The Lab</a>
-      <a class="btn btn-hot" href="rookie-track/app/">Try Rookie Track</a>
+      <a class="btn btn-hot" href="rookie-star/">Meet Rookie Star</a>
     </div>
   </div>
 </nav>
 
 <header class="hero">
-  <div class="court" aria-hidden="true">
-    <svg viewBox="0 0 1000 700" fill="none" stroke="var(--court)" stroke-width="6">
-      <rect x="330" y="-10" width="340" height="400" rx="2"/>
-      <circle cx="500" cy="390" r="120"/>
-      <path d="M90 -10 V180 A410 410 0 0 0 910 180 V-10"/>
-      <circle cx="500" cy="70" r="26"/>
-      <path d="M440 40 H560"/>
-      <path d="M-20 690 H1020"/>
-      <circle cx="500" cy="690" r="120"/>
-    </svg>
-  </div>
   <div class="wrap">
     <div>
-      <p class="eyebrow">Rookie Track · basketball stats for parents</p>
-      <h1>Every bucket <em>counts.</em></h1>
-      <p class="lede">Tap what your kid does from the stands. When the buzzer goes, you get the whole story: points, shots, the game’s turning points and what to work on next.</p>
+      <p class="eyebrow">SLTN Labs · independent app studio</p>
+      <h1>Small apps for <em>big moments.</em></h1>
+      <p class="lede">We build focused, private apps that turn everyday moments into clear answers you can act on. First up: the sidelines of youth basketball.</p>
       <div class="ctas">
-        <a class="btn btn-hot" href="rookie-track/app/">Try it free, no download
+        <a class="btn btn-hot" href="rookie-star/">Meet Rookie Star
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
-        <span class="soon"><i></i>iPhone app coming soon</span>
+        <a class="btn btn-ghost" href="#lab">Peek into the lab</a>
       </div>
-      <p class="byline"><span>No account</span><span>No ads</span><span>Stays on your phone</span></p>
+      <p class="byline"><span>No accounts</span><span>No ads</span><span>Your data stays yours</span></p>
     </div>
 
-    <div class="stage" aria-label="Rookie Track screens: live tracking and the game report">
-      <div class="phone p1">
-        <picture>
-          <source srcset="assets/shots/live-dark.webp" media="(prefers-color-scheme: dark)">
-          <img src="assets/shots/live-light.webp" width="585" height="1266" alt="Live tracking screen with the scoreboard and big shot buttons" fetchpriority="high">
-        </picture>
-      </div>
-      <div class="phone p2"><img src="assets/shots/chart.webp" width="585" height="1266" alt="Player dashboard with a points chart climbing game after game" loading="eager"></div>
-      <div class="chip c1" aria-hidden="true"><span class="dot">+2</span><span>Made 2-pointer<small>Q1 · logged in one tap</small></span></div>
-      <div class="chip c2" aria-hidden="true"><span class="dot">▲</span><span><b>61%</b><small>Shooting, last 3 games</small></span></div>
-      <div class="chip c3" aria-hidden="true"><span class="dot">★</span><span>New personal best<small>16 points</small></span></div>
+    <div class="shelf" aria-label="Our apps">
+      <div class="tile t-brand"><div class="logo"><svg width="100%" height="100%" viewBox="0 0 64 64" role="img" aria-label="SLTN Labs logo"><rect width="64" height="64" rx="16" fill="#0F1B2D"/><path d="M27.5 22.6 C 25.7 21.1, 23.6 20.2, 21.1 20.2 C 17.6 20.2, 15.2 22.1, 15.2 24.9 C 15.2 31.2, 28.6 28.5, 28.6 35.1 C 28.6 38.1, 26 40, 22.1 40 C 19.1 40, 16.4 39, 14.4 37.2" fill="none" stroke="#FFFFFF" stroke-width="4.6" stroke-linecap="round" stroke-linejoin="round"/><path d="M34.5 20.4 V39.6 H45" fill="none" stroke="#FFFFFF" stroke-width="4.6" stroke-linecap="round" stroke-linejoin="round"/><circle cx="51" cy="37.5" r="3.6" fill="#F97316"/></svg></div></div>
+      <a class="tile t-app" href="rookie-star/"><span class="k"><i></i>Out now</span><img src="rookie-track/icon.png" width="64" height="64" alt="Rookie Star app icon"><h3>Rookie Star</h3></a>
+      <div class="tile t-next"><span class="k">In the lab</span><span class="plus" aria-hidden="true">+</span><h3>Next app</h3></div>
+      <div class="tile t-next"><span class="k">Coming later</span><span class="plus" aria-hidden="true">+</span><h3>And the one after</h3></div>
     </div>
   </div>
 </header>
 
 <div class="mq-wrap" aria-hidden="true"><div class="marquee">
   <div class="track">
-    <span>Tap</span><span>Track</span><span>Cheer</span><span>Learn</span><span>Improve</span><span>Celebrate</span>
-    <span>Tap</span><span>Track</span><span>Cheer</span><span>Learn</span><span>Improve</span><span>Celebrate</span>
+    <span>Useful first</span><span>Private by design</span><span>Built to last</span><span>Small apps</span><span>Clear answers</span>
+    <span>Useful first</span><span>Private by design</span><span>Built to last</span><span>Small apps</span><span>Clear answers</span>
   </div>
 </div></div>
 
-<section class="block" id="features">
+<section class="block" id="apps">
   <div class="wrap">
     <div class="head reveal">
-      <p class="eyebrow">Built for the stands</p>
-      <h2>Stats that make sense, from the first tap.</h2>
-      <p>No clipboard, no jargon. Big buttons you can hit without looking away from the game, and reports written for parents, not scouts.</p>
+      <p class="eyebrow">Our apps</p>
+      <h2>One app at a time, done properly.</h2>
+      <p>We’d rather ship one thing people love than ten things they forget. Here’s what’s out so far.</p>
     </div>
-
-    <div class="bento">
-      <article class="card span3 reveal">
-        <div class="txt">
-          <h3>Tap it live</h3>
-          <p>Score, shots, rebounds, assists, steals and fouls, plus the scoreboard for both teams. Bench them with one tap and the clock on their minutes stops.</p>
+    <article class="feature reveal">
+      <div class="txt">
+        <span class="badge"><img src="rookie-track/icon.png" alt="">Rookie Star</span>
+        <h2>Every bucket counts.</h2>
+        <p>Basketball stats for parents. Tap what your kid does from the stands and get the whole story at the buzzer, plus progress across the season.</p>
+        <div class="ctas">
+          <a class="btn btn-navy" href="rookie-star/">Explore Rookie Star</a>
+          <a class="btn btn-ghost" href="rookie-track/app/">Open the app</a>
         </div>
-        <div class="shot"><div class="frame"><picture>
-          <source srcset="assets/shots/live-dark.webp" media="(prefers-color-scheme: dark)">
-          <img src="assets/shots/live-light.webp" width="585" height="1266" alt="Live tracker: scoreboard, +2, +3, +1 and missed shot buttons" loading="lazy"></picture></div></div>
-      </article>
-
-      <article class="card span3 hot reveal">
-        <div class="txt">
-          <h3>The story at the buzzer</h3>
-          <p>The team’s game first, then your kid’s, side by side and clearly separated. Quarter by quarter, with what went well and what to work on.</p>
-        </div>
-        <div class="shot"><div class="frame"><img src="assets/shots/report.webp" width="585" height="1266" alt="Game report: final score, team score by quarter" loading="lazy"></div></div>
-      </article>
-
-      <article class="card span2 dark reveal">
-        <div class="txt">
-          <div class="big-num">7</div>
-          <h3 style="margin-top:14px">games, one season view</h3>
-          <p>Wins and losses, points for and against, the toughest quarter and where fouls pile up.</p>
-          <div class="tagrow"><span>Team dashboard</span><span>Areas to develop</span></div>
-        </div>
-      </article>
-
-      <article class="card span4 reveal">
-        <div class="txt">
-          <div>
-            <h3>Watch them grow</h3>
-            <p>Charts for points, shooting and more across every game, before-and-after comparisons, and personal bests worth celebrating at dinner.</p>
-            <div class="tagrow"><span>Progress charts</span><span>Personal bests</span><span>Game log</span></div>
-          </div>
-        </div>
-        <div class="shot"><div class="frame" style="aspect-ratio:390/470"><img src="assets/shots/kid.webp" width="585" height="1266" alt="Player dashboard: steals up, turnovers down, shooting up, with a before and recent table" loading="lazy"></div></div>
-      </article>
-    </div>
+      </div>
+      <div class="phones" aria-hidden="true">
+        <div class="phone f1"><img src="rookie-star/shots/live-light.webp" width="585" height="1266" alt="" loading="lazy"></div>
+        <div class="phone f2"><img src="rookie-star/shots/chart.webp" width="585" height="1266" alt="" loading="lazy"></div>
+      </div>
+    </article>
   </div>
 </section>
 
-<section class="block" style="padding-top:0">
+<section class="block" id="how" style="padding-top:0">
   <div class="wrap">
     <div class="head reveal">
-      <p class="eyebrow">How it works</p>
-      <h2>Ready before warm-ups end.</h2>
+      <p class="eyebrow">How we build</p>
+      <h2>Three rules, every app.</h2>
     </div>
-    <div class="steps">
-      <div class="step reveal"><h3>Start a game</h3><p>Your kid’s name, the opponent and team colours. Ten seconds, and it remembers them next time.</p></div>
-      <div class="step reveal"><h3>Tap as it happens</h3><p>One tap for a basket, a rebound or a steal. Made a mistake? Undo, or fix any play later.</p></div>
-      <div class="step reveal"><h3>Read the report</h3><p>The full game the moment it ends, then season trends as the games add up. Share it with a screenshot.</p></div>
-    </div>
-  </div>
-</section>
-
-<section id="privacy" style="padding-bottom:clamp(72px,10vw,128px)">
-  <div class="wrap">
-    <div class="calm reveal">
-      <div class="head">
-        <p class="eyebrow">Peace of mind, built in</p>
-        <h2>Your kid’s stats stay yours.</h2>
-        <p>Rookie Track is made for families, so privacy isn’t a setting. It’s how the app works.</p>
-      </div>
-      <div class="calm-grid">
-        <div><b>1</b><h3>No account</h3><p>No sign-up, no email, no password. Open it and start tracking.</p></div>
-        <div><b>2</b><h3>Stays on your phone</h3><p>Games are saved on your device, not on our servers.</p></div>
-        <div><b>3</b><h3>No ads, no tracking</h3><p>No ad networks and no analytics following your family around.</p></div>
-        <div><b>4</b><h3>You decide</h3><p>Nothing is shared unless you choose to send it, like a screenshot to the team chat.</p></div>
-      </div>
-      <a class="more" href="rookie-track/privacy.html">Read the privacy policy →</a>
+    <div class="pr">
+      <div class="reveal"><span class="n">01</span><h3>Useful first</h3><p>Each app solves one real problem well, then grows from what people actually use, not from a feature checklist.</p></div>
+      <div class="reveal"><span class="n">02</span><h3>Private by design</h3><p>No accounts unless they’re needed, no ad networks, no selling data. If something leaves your phone, you chose it.</p></div>
+      <div class="reveal"><span class="n">03</span><h3>Built to last</h3><p>Designed with an architect’s eye: simple foundations, careful upgrades, and your data kept safe from one version to the next.</p></div>
     </div>
   </div>
 </section>
@@ -354,27 +353,30 @@ footer { border-top: 1px solid var(--line); padding-block: 48px calc(40px + env(
 <section class="block" id="lab" style="padding-top:0">
   <div class="wrap">
     <div class="head reveal">
-      <p class="eyebrow">From the lab</p>
-      <h2>What we’re testing next.</h2>
-      <p>Early experiments with the camera. They’re rough and they live in your browser. Try them and tell us what you think with the Feedback button.</p>
+      <p class="eyebrow">The Lab</p>
+      <h2>Ideas, tested in the open.</h2>
+      <p>Before something becomes a feature, it lives here as an experiment. They’re rough on purpose. Try them and tell us what works with the Feedback button.</p>
     </div>
     <div class="lab">
-      <a class="reveal" href="rookie-track/video/score/"><span class="pill">Experiment</span><h3>Score Lab</h3><p>Point your phone at the hoop and it counts the baskets for you, live.</p><span class="go">Try Score Lab →</span></a>
+      <a class="reveal" href="rookie-track/video/score/"><span class="pill">Experiment</span><h3>Score Lab</h3><p>Point your phone at the game and it counts the baskets for you, live, on the device.</p><span class="go">Try Score Lab →</span></a>
       <a class="reveal" href="rookie-track/video/"><span class="pill">Video Lab v0.2</span><h3>Video Lab</h3><p>Load a game clip and pull out the plays, without uploading the video anywhere.</p><span class="go">Open Video Lab →</span></a>
       <a class="reveal" href="rookie-track/video/next/"><span class="pill">In development</span><h3>Video Lab v0.3</h3><p>The next version, still being built. Expect rough edges.</p><span class="go">Take a peek →</span></a>
     </div>
   </div>
 </section>
 
-<section class="tipoff">
-  <div class="wrap reveal">
-    <h2>Ready for <span>tip-off</span><svg class="ball" viewBox="0 0 64 64" aria-hidden="true"><circle cx="32" cy="32" r="29" fill="#F97316"/><path d="M32 3 V61 M3 32 H61 M12 12 C 22 22, 22 42, 12 52 M52 12 C 42 22, 42 42, 52 52" stroke="#0F1B2D" stroke-width="3.4" fill="none" stroke-linecap="round"/></svg>?</h2>
-    <p>Open Rookie Track before the next game. It’s free, it runs in your phone’s browser, and the iPhone app is on its way.</p>
-    <div class="ctas">
-      <a class="btn btn-hot" href="rookie-track/app/">Start tracking free</a>
-      <a class="btn btn-ghost" href="#features">See how it works</a>
+<section style="padding-bottom:clamp(72px,10vw,128px)">
+  <div class="wrap">
+    <div class="hello reveal">
+      <div>
+        <p class="eyebrow">Say hello</p>
+        <h2>Got an idea, a bug or a <span>big moment</span>?</h2>
+        <p>We read everything. Tell us what you’d like an app for, or what would make Rookie Star better.</p>
+      </div>
+      <div class="ctas">
+        <a class="btn btn-hot" href="mailto:mosoultan@icloud.com">Email us</a>
+      </div>
     </div>
-    <p class="hint">On iPhone: open it in Safari, tap Share, then <b>Add to Home Screen</b> so it opens like an app and keeps your games.</p>
   </div>
 </section>
 
@@ -383,11 +385,11 @@ footer { border-top: 1px solid var(--line); padding-block: 48px calc(40px + env(
     <div class="fgrid">
       <div>
         <a class="mark" href="./" aria-label="SLTN Labs home"><svg width="32" height="32" viewBox="0 0 64 64" aria-hidden="true"><rect width="64" height="64" rx="16" fill="#0F1B2D"/><path d="M27.5 22.6 C 25.7 21.1, 23.6 20.2, 21.1 20.2 C 17.6 20.2, 15.2 22.1, 15.2 24.9 C 15.2 31.2, 28.6 28.5, 28.6 35.1 C 28.6 38.1, 26 40, 22.1 40 C 19.1 40, 16.4 39, 14.4 37.2" fill="none" stroke="#FFFFFF" stroke-width="4.6" stroke-linecap="round" stroke-linejoin="round"/><path d="M34.5 20.4 V39.6 H45" fill="none" stroke="#FFFFFF" stroke-width="4.6" stroke-linecap="round" stroke-linejoin="round"/><circle cx="51" cy="37.5" r="3.6" fill="#F97316"/></svg>SLTN <small>Labs</small></a>
-        <p class="about">Small apps that turn everyday moments into clear answers. Private by design.</p>
+        <p class="about">An independent studio making small apps that turn everyday moments into clear answers.</p>
       </div>
-      <div><h4>Apps</h4><ul><li><a href="rookie-track/app/">Rookie Track</a></li><li><a href="#features">Features</a></li></ul></div>
+      <div><h4>Apps</h4><ul><li><a href="rookie-star/">Rookie Star</a></li><li><a href="rookie-track/app/">Open the app</a></li></ul></div>
       <div><h4>Lab</h4><ul><li><a href="rookie-track/video/score/">Score Lab</a></li><li><a href="rookie-track/video/">Video Lab v0.2</a></li><li><a href="rookie-track/video/next/">Video Lab v0.3</a></li></ul></div>
-      <div><h4>Company</h4><ul><li><a href="rookie-track/privacy.html">Privacy policy</a></li><li><a href="mailto:mosoultan@icloud.com">Contact</a></li></ul></div>
+      <div><h4>Company</h4><ul><li><a href="rookie-track/privacy.html">Rookie Star privacy</a></li><li><a href="mailto:mosoultan@icloud.com">Contact</a></li></ul></div>
     </div>
     <p class="legal">© 2026 SLTN Labs</p>
   </div>
