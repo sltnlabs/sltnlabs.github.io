@@ -1,6 +1,6 @@
 {
-  "name": "Rookie Track",
-  "short_name": "Rookie Track",
+  "name": "Rookie Star",
+  "short_name": "Rookie Star",
   "description": "Live basketball stats for parents.",
   "start_url": "/rookie-track/app/",
   "scope": "/rookie-track/app/",

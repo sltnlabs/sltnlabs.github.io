@@ -9,7 +9,7 @@
 (function () {
   "use strict";
   var ENDPOINT = "https://sltn-feedback.mosoultan.workers.dev/"; // Cloudflare Worker: rookie-track/infra/feedback-worker
-  var FALLBACK_EMAIL = "mosoultan@icloud.com";
+  var FALLBACK_EMAIL = "contact@sltnlabs.com";
   var HIDE_ON = [/\/rookie-track\/app\/live\//]; // keep the live tracker screen clear
 
   var script = document.currentScript || document.querySelector('script[src*="feedback.js"]');
