@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>SLTN Labs · software products, designed, built and run</title>
-<meta name="description" content="SLTN Labs is a software house that designs, builds and runs cloud and mobile products. Home of Sinova Dental, dental clinic software for Egypt, and Rookie Star, basketball stats for parents.">
+<meta name="description" content="SLTN Labs makes simple, useful apps. Home of Sinova Dental, dental clinic software for Egypt, and Rookie Star, basketball stats for parents.">
 <meta property="og:title" content="SLTN Labs">
 <meta property="og:description" content="We design, build and run software products. Home of Sinova Dental and Rookie Star.">
 <meta property="og:url" content="https://sltnlabs.com/">
@@ -111,18 +111,7 @@ section.block { padding-block: clamp(72px, 10vw, 120px); }
 @media (max-width: 900px) { .approach { grid-template-columns: 1fr 1fr; } .approach div:nth-child(2) { border-inline-end: 0; } .approach div:nth-child(-n+2) { border-bottom: 1px solid var(--line); } }
 @media (max-width: 560px) { .approach { grid-template-columns: 1fr; } .approach div { border-inline-end: 0; border-bottom: 1px solid var(--line); } .approach div:last-child { border-bottom: 0; } }
 
-.stack { display: flex; flex-wrap: wrap; gap: 10px 26px; margin-top: 28px; color: var(--muted); font-size: 15px; font-weight: 500; }
-.stack b { color: var(--ink); font-weight: 600; margin-right: 6px; }
 
-/* lab */
-.lab { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
-.lab a { text-decoration: none; border: 1px solid var(--line); border-radius: var(--r); padding: 22px; display: flex; flex-direction: column; gap: 6px; background: #fff; transition: border-color .15s; }
-.lab a:hover { border-color: var(--steel); }
-.lab .pill { align-self: flex-start; font-size: 12px; font-weight: 600; letter-spacing: .04em; text-transform: uppercase; color: var(--steel-d); background: var(--steel-l); padding: 3px 9px; border-radius: 6px; }
-.lab h3 { font-size: 20px; letter-spacing: -.01em; margin-top: 6px; }
-.lab p { margin: 0; color: var(--ink2); font-size: 15px; }
-.lab .go { margin-top: auto; padding-top: 6px; font-weight: 600; color: var(--steel); font-size: 15px; }
-@media (max-width: 900px) { .lab { grid-template-columns: 1fr; } }
 
 /* contact */
 .hello { background: var(--navy); color: #fff; border-radius: 28px; padding: clamp(40px, 7vw, 80px) clamp(24px, 5vw, 64px); display: grid; grid-template-columns: 1.4fr 1fr; gap: 28px; align-items: end; position: relative; overflow: hidden; }
@@ -158,9 +147,7 @@ footer { border-top: 1px solid var(--line); margin-top: clamp(72px, 10vw, 120px)
     <a class="mark" href="./" aria-label="SLTN Labs home"><svg width="36" height="36" viewBox="0 0 64 64" aria-hidden="true"><rect width="64" height="64" rx="16" fill="#0F1B2D"/><path d="M27.5 22.6 C 25.7 21.1, 23.6 20.2, 21.1 20.2 C 17.6 20.2, 15.2 22.1, 15.2 24.9 C 15.2 31.2, 28.6 28.5, 28.6 35.1 C 28.6 38.1, 26 40, 22.1 40 C 19.1 40, 16.4 39, 14.4 37.2" fill="none" stroke="#FFFFFF" stroke-width="4.6" stroke-linecap="round" stroke-linejoin="round"/><path d="M34.5 20.4 V39.6 H45" fill="none" stroke="#FFFFFF" stroke-width="4.6" stroke-linecap="round" stroke-linejoin="round"/><circle cx="51" cy="37.5" r="3.6" fill="#F97316"/></svg>SLTN <small>Labs</small></a>
     <div class="navlinks">
       <a href="#products">Products</a>
-      <a href="#approach">How we build</a>
-      <a href="#lab">Lab</a>
-      <a class="btn btn-main" href="#contact">Work with us</a>
+      <a class="btn btn-main" href="#contact">Contact us</a>
     </div>
   </div>
 </nav>
@@ -168,20 +155,18 @@ footer { border-top: 1px solid var(--line); margin-top: clamp(72px, 10vw, 120px)
 <header class="hero">
   <div class="wrap">
     <div>
-      <p class="eyebrow">Software house · Egypt</p>
-      <h1>We design, build and run <span>software products.</span></h1>
-      <p class="lede">SLTN Labs takes products from architecture to launch and keeps them running: cloud SaaS, mobile apps and the data behind them.</p>
+      <p class="eyebrow">Made in Egypt</p>
+      <h1>Simple apps for <span>real everyday work.</span></h1>
+      <p class="lede">We make apps that save people time: one for dental clinics, one for basketball parents. Easy to start, in your language, and careful with your data.</p>
       <div class="ctas">
         <a class="btn btn-main" href="#products">See our products
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
         <a class="btn btn-line" href="mailto:contact@sltnlabs.com">contact@sltnlabs.com</a>
       </div>
-      <ul class="caps"><li>Cloud SaaS</li><li>iOS &amp; Android</li><li>Solution architecture</li><li>Data &amp; AI</li></ul>
     </div>
     <div class="portfolio" aria-label="Our products">
-      <a class="pcard" href="sinova/"><img src="sinova/brand/app-icon-1024.png" width="56" height="56" alt=""><div><h3>Sinova Dental</h3><p>Dental clinic software for Egypt · cloud SaaS</p></div><span class="st live">Live</span></a>
-      <a class="pcard" href="rookie-star/"><img src="rookie-track/icon.png" width="56" height="56" alt=""><div><h3>Rookie Star</h3><p>Basketball stats for parents · iOS</p></div><span class="st live">Live</span></a>
-      <div class="pcard next"><span class="plus" aria-hidden="true">+</span><div><h3 style="color:var(--ink2)">Your product</h3><p>We take on a small number of builds each year.</p></div></div>
+      <a class="pcard" href="sinova/"><img src="sinova/brand/app-icon-1024.png" width="56" height="56" alt=""><div><h3>Sinova Dental</h3><p>For dental clinics in Egypt · phone and computer</p></div><span class="st live">Live</span></a>
+      <a class="pcard" href="rookie-star/"><img src="rookie-track/icon.png" width="56" height="56" alt=""><div><h3>Rookie Star</h3><p>Basketball stats for parents · iPhone</p></div><span class="st live">Live</span></a>
     </div>
   </div>
 </header>
@@ -190,26 +175,26 @@ footer { border-top: 1px solid var(--line); margin-top: clamp(72px, 10vw, 120px)
   <div class="wrap">
     <div class="head reveal">
       <p class="eyebrow">Products</p>
-      <h2>Products we own and run.</h2>
-      <p>Each product has its own brand and audience. What they share is how they're built: same engineering standards, same care with data.</p>
+      <h2>Our products.</h2>
+      <p>Each one solves a real problem for a specific group of people, and each one keeps their data private.</p>
     </div>
     <div class="products">
       <article class="product p-egy reveal">
         <div class="txt">
-          <div class="top"><img src="sinova/brand/app-icon-1024.png" width="44" height="44" alt=""><div><b>Sinova Dental</b><div class="kind">B2B SaaS · Arabic-first</div></div></div>
+          <div class="top"><img src="sinova/brand/app-icon-1024.png" width="44" height="44" alt=""><div><b>Sinova Dental</b><div class="kind">For dental clinics · Arabic</div></div></div>
           <h3>Clinic management for small dental clinics in Egypt.</h3>
           <p>Appointments per chair, patient files with medical alerts, and a dental chart that keeps every change. Built with dentists, for Arabic-speaking teams.</p>
-          <div class="facts"><span>Multi-tenant</span><span>Microsoft Azure</span><span>Google sign-in</span><span>Web + mobile</span></div>
+          <div class="facts"><span>Arabic first</span><span>Phone and computer</span><span>Sign in with Google</span><span>Nothing to install</span></div>
           <span style="display:flex;gap:18px;flex-wrap:wrap"><a class="go" href="sinova/">Visit Sinova Dental →</a><a class="go" href="https://app.sinovadental.com">Clinic sign-in →</a></span>
         </div>
         <div class="art" aria-hidden="true"><div class="win"><img src="sinova/shots/chart.webp" width="1600" height="1012" alt="" loading="lazy"></div></div>
       </article>
       <article class="product p-rs reveal">
         <div class="txt">
-          <div class="top"><img src="rookie-track/icon.png" width="44" height="44" alt=""><div><b>Rookie Star</b><div class="kind">Consumer app · iOS</div></div></div>
+          <div class="top"><img src="rookie-track/icon.png" width="44" height="44" alt=""><div><b>Rookie Star</b><div class="kind">For parents · iPhone</div></div></div>
           <h3>Basketball stats for parents, from the stands.</h3>
           <p>Tap what your kid does during the game and get the whole story at the buzzer, plus progress across the season. Private by design: no account, no ads.</p>
-          <div class="facts"><span>App Store</span><span>Offline-first</span><span>On-device data</span></div>
+          <div class="facts"><span>App Store</span><span>Works offline</span><span>Data stays on your phone</span></div>
           <a class="go" href="rookie-star/">Visit Rookie Star →</a>
         </div>
         <div class="art" aria-hidden="true">
@@ -221,48 +206,16 @@ footer { border-top: 1px solid var(--line); margin-top: clamp(72px, 10vw, 120px)
   </div>
 </section>
 
-<section class="block" id="approach" style="padding-top:0">
-  <div class="wrap">
-    <div class="head reveal">
-      <p class="eyebrow">How we build</p>
-      <h2>Engineering you can rely on.</h2>
-      <p>Small team, enterprise habits. Every product follows the same playbook, from the first decision record to the last deploy.</p>
-    </div>
-    <div class="approach reveal">
-      <div><span class="ic"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="8.5" y="14" width="7" height="7" rx="1"/><path d="M6.5 10v2h11v-2M12 12v2"/></svg></span><h3>Architecture first</h3><p>Decisions written down as ADRs, proven with small prototypes before they become features.</p></div>
-      <div><span class="ic"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l8 4v5c0 5-3.5 8-8 9-4.5-1-8-4-8-9V7z"/><path d="M9 12l2 2 4-4"/></svg></span><h3>Secure by default</h3><p>Standard sign-in (OpenID Connect), data isolated per customer in the database, least-privilege access.</p></div>
-      <div><span class="ic"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3 8-8"/><path d="M20 12v7a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h9"/></svg></span><h3>Tested every release</h3><p>Each feature ships on its own branch with a test plan, and automated browser and database tests run before merge.</p></div>
-      <div><span class="ic"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.5 19a4.5 4.5 0 1 0-1.4-8.8A6 6 0 0 0 4.5 13 3 3 0 0 0 6 19z"/></svg></span><h3>Run in the cloud</h3><p>Infrastructure as code, automated deployments, and costs that scale down when nobody is using it.</p></div>
-    </div>
-    <div class="stack reveal"><span><b>Cloud</b>Azure · AWS · GCP</span><span><b>Apps</b>Next.js · React Native · Expo</span><span><b>Data</b>PostgreSQL · Databricks</span><span><b>Delivery</b>GitHub Actions · Bicep</span></div>
-  </div>
-</section>
-
-<section class="block" id="lab" style="padding-top:0">
-  <div class="wrap">
-    <div class="head reveal">
-      <p class="eyebrow">Lab</p>
-      <h2>Experiments, tested in the open.</h2>
-      <p>Ideas start here before they become features. They're rough on purpose. Try them and send feedback.</p>
-    </div>
-    <div class="lab">
-      <a class="reveal" href="rookie-track/video/score/"><span class="pill">Experiment</span><h3>Score Lab</h3><p>Point a phone at the game and count baskets live, on the device.</p><span class="go">Try Score Lab →</span></a>
-      <a class="reveal" href="rookie-track/video/"><span class="pill">Video Lab v0.2</span><h3>Video Lab</h3><p>Pull plays out of a game clip without uploading the video.</p><span class="go">Open Video Lab →</span></a>
-      <a class="reveal" href="rookie-track/video/next/"><span class="pill">In development</span><h3>Video Lab v0.3</h3><p>The next version, still being built. Expect rough edges.</p><span class="go">Take a peek →</span></a>
-    </div>
-  </div>
-</section>
-
 <section id="contact">
   <div class="wrap">
     <div class="hello reveal">
       <div>
-        <p class="eyebrow">Work with us</p>
-        <h2>Have a product in mind?</h2>
-        <p>Tell us what you want to build. We'll reply with honest questions, a rough architecture and what it would take.</p>
+        <p class="eyebrow">Contact</p>
+        <h2>Questions or ideas?</h2>
+        <p>Whether you run a clinic, coach a team or just tried one of our apps, we'd like to hear from you.</p>
       </div>
       <div class="ctas">
-        <a class="btn btn-light" href="mailto:contact@sltnlabs.com?subject=Project%20enquiry">Email us</a>
+        <a class="btn btn-light" href="mailto:contact@sltnlabs.com">Email us</a>
       </div>
     </div>
   </div>
@@ -273,10 +226,9 @@ footer { border-top: 1px solid var(--line); margin-top: clamp(72px, 10vw, 120px)
     <div class="fgrid">
       <div>
         <a class="mark" href="./" aria-label="SLTN Labs home"><svg width="32" height="32" viewBox="0 0 64 64" aria-hidden="true"><rect width="64" height="64" rx="16" fill="#0F1B2D"/><path d="M27.5 22.6 C 25.7 21.1, 23.6 20.2, 21.1 20.2 C 17.6 20.2, 15.2 22.1, 15.2 24.9 C 15.2 31.2, 28.6 28.5, 28.6 35.1 C 28.6 38.1, 26 40, 22.1 40 C 19.1 40, 16.4 39, 14.4 37.2" fill="none" stroke="#FFFFFF" stroke-width="4.6" stroke-linecap="round" stroke-linejoin="round"/><path d="M34.5 20.4 V39.6 H45" fill="none" stroke="#FFFFFF" stroke-width="4.6" stroke-linecap="round" stroke-linejoin="round"/><circle cx="51" cy="37.5" r="3.6" fill="#F97316"/></svg>SLTN <small>Labs</small></a>
-        <p class="about">A software house that designs, builds and runs its own products, and a few for others.</p>
+        <p class="about">Simple, useful apps, made in Egypt.</p>
       </div>
       <div><h4>Products</h4><ul><li><a href="sinova/">Sinova Dental</a></li><li><a href="rookie-star/">Rookie Star</a></li></ul></div>
-      <div><h4>Lab</h4><ul><li><a href="rookie-track/video/score/">Score Lab</a></li><li><a href="rookie-track/video/">Video Lab v0.2</a></li><li><a href="rookie-track/video/next/">Video Lab v0.3</a></li></ul></div>
       <div><h4>Company</h4><ul><li><a href="mailto:contact@sltnlabs.com">Contact</a></li><li><a href="sinova/privacy.html">Sinova Dental privacy</a></li><li><a href="rookie-track/privacy.html">Rookie Star privacy</a></li></ul></div>
     </div>
     <p class="legal">© 2026 SLTN Labs</p>

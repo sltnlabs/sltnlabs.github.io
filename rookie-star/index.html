@@ -171,15 +171,6 @@ section.block { padding-block: clamp(72px, 10vw, 128px); }
 @media (max-width: 900px) { .calm-grid { grid-template-columns: 1fr 1fr; } }
 @media (max-width: 520px) { .calm-grid { grid-template-columns: 1fr; } }
 
-/* lab */
-.lab { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
-.lab a { text-decoration: none; background: var(--paper); border: 2px dashed var(--line); border-radius: 24px; padding: 26px; display: flex; flex-direction: column; gap: 10px; transition: border-color .15s, transform .15s; }
-.lab a:hover { border-color: var(--orange); transform: translateY(-3px); }
-.lab .pill { align-self: flex-start; font-size: 13px; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; color: var(--orange-ink); background: var(--orange-soft); padding: 5px 10px; border-radius: 99px; }
-.lab h3 { font-size: 26px; }
-.lab p { margin: 0; color: var(--ink2); font-size: 16px; }
-.lab .go { margin-top: auto; padding-top: 8px; font-weight: 700; color: var(--orange-ink); }
-@media (max-width: 900px) { .lab { grid-template-columns: 1fr; } }
 
 /* closing */
 .tipoff { text-align: center; padding-block: clamp(80px, 12vw, 150px); position: relative; }
@@ -209,7 +200,7 @@ footer { border-top: 1px solid var(--line); padding-block: 48px calc(40px + env(
   html { scroll-behavior: auto; }
   .chip, .marquee .track { animation: none; }
   .reveal { opacity: 1; transform: none; transition: none; }
-  .btn, .lab a { transition: none; }
+  .btn { transition: none; }
 }
 </style>
 </head>
@@ -221,7 +212,6 @@ footer { border-top: 1px solid var(--line); padding-block: 48px calc(40px + env(
     <div class="navlinks">
       <a href="#features">Features</a>
       <a href="#privacy">Privacy</a>
-      <a href="#lab">The Lab</a>
       <a class="btn btn-hot" href="../rookie-track/app/">Try Rookie Star</a>
     </div>
   </div>
@@ -348,26 +338,11 @@ footer { border-top: 1px solid var(--line); padding-block: 48px calc(40px + env(
       </div>
       <div class="calm-grid">
         <div><b>1</b><h3>No account</h3><p>No sign-up, no email, no password. Open it and start tracking.</p></div>
-        <div><b>2</b><h3>Stays on your phone</h3><p>Games are saved on your device, not on our servers.</p></div>
+        <div><b>2</b><h3>Stays on your phone</h3><p>Games are saved on your device, never sent to us.</p></div>
         <div><b>3</b><h3>No ads, no tracking</h3><p>No ad networks and no analytics following your family around.</p></div>
         <div><b>4</b><h3>You decide</h3><p>Nothing is shared unless you choose to send it, like a screenshot to the team chat.</p></div>
       </div>
       <a class="more" href="../rookie-track/privacy.html">Read the privacy policy →</a>
-    </div>
-  </div>
-</section>
-
-<section class="block" id="lab" style="padding-top:0">
-  <div class="wrap">
-    <div class="head reveal">
-      <p class="eyebrow">From the lab</p>
-      <h2>What we’re testing next.</h2>
-      <p>Early experiments with the camera. They’re rough and they live in your browser. Try them and tell us what you think with the Feedback button.</p>
-    </div>
-    <div class="lab">
-      <a class="reveal" href="../rookie-track/video/score/"><span class="pill">Experiment</span><h3>Score Lab</h3><p>Point your phone at the hoop and it counts the baskets for you, live.</p><span class="go">Try Score Lab →</span></a>
-      <a class="reveal" href="../rookie-track/video/"><span class="pill">Video Lab v0.2</span><h3>Video Lab</h3><p>Load a game clip and pull out the plays, without uploading the video anywhere.</p><span class="go">Open Video Lab →</span></a>
-      <a class="reveal" href="../rookie-track/video/next/"><span class="pill">In development</span><h3>Video Lab v0.3</h3><p>The next version, still being built. Expect rough edges.</p><span class="go">Take a peek →</span></a>
     </div>
   </div>
 </section>
@@ -392,7 +367,6 @@ footer { border-top: 1px solid var(--line); padding-block: 48px calc(40px + env(
         <p class="about">Small apps that turn everyday moments into clear answers. Private by design.</p>
       </div>
       <div><h4>Apps</h4><ul><li><a href="../rookie-track/app/">Rookie Star</a></li><li><a href="#features">Features</a></li></ul></div>
-      <div><h4>Lab</h4><ul><li><a href="../rookie-track/video/score/">Score Lab</a></li><li><a href="../rookie-track/video/">Video Lab v0.2</a></li><li><a href="../rookie-track/video/next/">Video Lab v0.3</a></li></ul></div>
       <div><h4>Company</h4><ul><li><a href="../">SLTN Labs</a></li><li><a href="../rookie-track/privacy.html">Privacy policy</a></li><li><a href="mailto:contact@sltnlabs.com">Contact</a></li></ul></div>
     </div>
     <p class="legal">Rookie Star is made by <a href="../">SLTN Labs</a>. © 2026</p>
